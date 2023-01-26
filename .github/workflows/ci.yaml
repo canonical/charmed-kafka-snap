@@ -1,7 +1,7 @@
 name: Build and Test
 
 on:
-  workflow_call:
+  pull_request:
     outputs:
       snap:
         description: "Filename of the built snap artifact"
