@@ -131,7 +131,6 @@ parts:
     override-prime: |
       snapcraftctl prime
       rm -vf usr/lib/jvm/java-17-openjdk-amd64/lib/security/cacerts
-
   kafka:
     plugin: nil
     override-build: |
@@ -139,7 +138,6 @@ parts:
       curl -o "${archive}" "https://downloads.apache.org/kafka/${SNAPCRAFT_PROJECT_VERSION}/${archive}"
       mkdir -p $CRAFT_PART_INSTALL/opt/kafka
       tar -xzvf "${archive}" -C "${CRAFT_PART_INSTALL}/opt/kafka" --strip-components=1
-
   prometheus-exporter:
     plugin: nil
     after: [kafka]
@@ -151,7 +149,6 @@ parts:
       cp jmx_prometheus_javaagent.jar $CRAFT_PART_INSTALL/
     organize:
       jmx_prometheus_javaagent.jar: opt/kafka/extra/jmx_prometheus_javaagent.jar
-
   wrapper:
     plugin: dump
     source: snap/local
