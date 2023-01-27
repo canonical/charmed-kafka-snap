@@ -1,5 +1,8 @@
 name: Build and Test
 
+env:
+  VERSION: 3.3.2
+
 on:
   workflow_dispatch:
   pull_request:
@@ -11,23 +14,26 @@ jobs:
     outputs:
       snap-file: ${{ steps.snapcraft.outputs.snap }}
     steps:
-      - name: Checkout repository
+      - id: checkout
+        name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Upgrade linux deps
+      - id: dependencies 
+        name: Upgrade linux deps
         run: |
           sudo apt-get update
           sudo apt-get upgrade --yes
 
-      - name: Build snap
+      - id: snapcraft
+        name: Build snap
         uses: snapcore/action-build@v1
-        id: snapcraft
 
-      - name: Upload built snap job artifact
+      - id: upload
+        name: Upload built snap job artifact
         uses: actions/upload-artifact@v3
         with:
-          name: local-${{ steps.snapcraft.outputs.snap }}
-          path: ${{ steps.snapcraft.outputs.snap }}
+          name: charmed-kafka_snap_amd64
+          path: charmed-kafka_${{env.VERSION}}_amd64.snap
 
   test:
     name: Test Snap
@@ -38,12 +44,12 @@ jobs:
       - name: Download snap file
         uses: actions/download-artifact@v3
         with:
-          name: local-${{ needs.build.outputs.snap }}
+          name: charmed-kafka_snap_amd64
           path: .
 
       - name: Install snap file
         run: |
-          sudo snap install --dangerous ${{ needs.build.outputs.snap }}
+          sudo snap install charmed-kafka_${{env.VERSION}}_amd64.snap --dangerous
           sudo systemctl status snap.charmed-kafka.charmed-kafka
           status=$?
       - name: Connect required interfaces
