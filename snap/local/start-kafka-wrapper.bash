@@ -20,7 +20,7 @@ export LOG_DIR="${SNAP_COMMON}/log"
 # Inject the JMX exporter if we're running Kafka itself
 JMX_EXPORTER_PATH="${SNAP}/opt/kafka/extra/jmx_prometheus_javaagent.jar"
 JMX_EXPORTER_CONF="${SNAP}/opt/kafka/default-config/jmx_prometheus.yaml"
-JMX_PORT="9100"
+JMX_PORT="9101"
 export KAFKA_OPTS="-javaagent:${JMX_EXPORTER_PATH}=${JMX_PORT}:${JMX_EXPORTER_CONF}"
 
 if [ -e "${SNAP_COMMON}/broker.env" ]; then
