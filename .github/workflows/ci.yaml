@@ -51,13 +51,10 @@ jobs:
         run: |
           sudo snap install charmed-kafka_${{env.VERSION}}_amd64.snap --dangerous
 
-      - name: Connect required interfaces
-        run: |
-          sudo snap connect charmed-kafka:removable-media
-
       - name: Start Charmed-Kafka
         run: |
           sudo snap start charmed-kafka
+          sleep 10
 
       - name: Check topic creation
         run: |
