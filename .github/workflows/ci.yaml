@@ -59,6 +59,6 @@ jobs:
       - name: Check topic creation
         run: |
           topic_creation=$(charmed-kafka.topics --create --topic test --bootstrap-server localhost:9092)
-          if [ "$topic_creation" != "Created topic test.\n" ]; then
+          if [ "$topic_creation" != "Created topic test." ]; then
               exit 1
           fi
