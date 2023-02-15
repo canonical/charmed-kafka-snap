@@ -24,105 +24,148 @@ apps:
     command: start-zookeeper-wrapper.bash
     daemon: simple
     install-mode: disable
-    plugs: [network, network-bind, removable-media]
+    plugs:
+      - network
+      - network-bind
+      - removable-media
   configs:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-configs.sh
   topics:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-topics.sh
   console-consumer:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-console-consumer.sh
   console-producer:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-console-producer.sh
   consumer-groups:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-consumer-groups.sh
   get-offsets:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-get-offsets.sh
   reassign-partitions:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-reassign-partitions.sh
   replica-verification:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-replica-verification.sh
   zookeeper-shell:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: zookeeper-shell.sh
   run-class:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-run-class.sh
   kafka-streams-application-reset:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-streams-application-reset.sh
   transactions:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-transactions.sh
   leader-election:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-leader-election.sh
   dump-log:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-dump-log.sh
   acls:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-acls.sh
   cluster:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-cluster.sh
   verifiable-consumer:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-verifiable-consumer.sh
   verifiable-producer:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: kafka-verifiable-producer.sh
   trogdor:
     command: script-wrapper.bash
-    plugs: [network, network-bind]
+    plugs:
+      - network
+      - network-bind
     environment:
       _wrapper_script: trogdor.sh
   exporter:
     command: opt/kafka/kafka_exporter
-    plugs: [network, network-bind, removable-media]
+    plugs:
+      - network
+      - network-bind
 
 parts:
   dependencies:
