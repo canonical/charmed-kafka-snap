@@ -19,7 +19,10 @@ apps:
     command: start-kafka-wrapper.bash
     daemon: simple
     install-mode: disable
-    plugs: [network, network-bind, removable-media]
+    plugs:
+      - network
+      - network-bind
+      - removable-media
   zookeeper:
     command: start-zookeeper-wrapper.bash
     daemon: simple
@@ -162,7 +165,7 @@ apps:
     environment:
       _wrapper_script: trogdor.sh
   exporter:
-    command: opt/kafka/kafka_exporter
+    command: kafka_exporter
     plugs:
       - network
       - network-bind
@@ -187,9 +190,9 @@ parts:
   kafka-exporter:
     plugin: nil
     override-build: |
-      archive="kafka-exporter.tar.gz"
-      curl -o "${archive}" "https://github.com/danielqsj/kafka_exporter/releases/download/v1.6.0/kafka_exporter-1.6.0.linux-amd64.tar.gz"
-      tar -xzvf "${archive}" -C "${CRAFT_PART_INSTALL}/opt/kafka" --strip-components=1
+      exporter="kafka_exporter-1.6.0.linux-amd64.tar.gz"
+      curl -sLo "${exporter}" "https://github.com/danielqsj/kafka_exporter/releases/download/v1.6.0/${exporter}"
+      tar -xvf "${exporter}" -C "${CRAFT_PART_INSTALL}/" --strip-components=1
   prometheus-exporter:
     plugin: nil
     after: [kafka]
