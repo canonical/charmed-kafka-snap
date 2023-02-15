@@ -120,6 +120,9 @@ apps:
     plugs: [network, network-bind]
     environment:
       _wrapper_script: trogdor.sh
+  exporter:
+    command: opt/kafka/kafka_exporter
+    plugs: [network, network-bind, removable-media]
 
 parts:
   dependencies:
@@ -137,6 +140,12 @@ parts:
       archive="kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}.tgz"
       curl -o "${archive}" "https://downloads.apache.org/kafka/${SNAPCRAFT_PROJECT_VERSION}/${archive}"
       mkdir -p $CRAFT_PART_INSTALL/opt/kafka
+      tar -xzvf "${archive}" -C "${CRAFT_PART_INSTALL}/opt/kafka" --strip-components=1
+  kafka-exporter:
+    plugin: nil
+    override-build: |
+      archive="kafka-exporter.tar.gz"
+      curl -o "${archive}" "https://github.com/danielqsj/kafka_exporter/releases/download/v1.6.0/kafka_exporter-1.6.0.linux-amd64.tar.gz"
       tar -xzvf "${archive}" -C "${CRAFT_PART_INSTALL}/opt/kafka" --strip-components=1
   prometheus-exporter:
     plugin: nil
