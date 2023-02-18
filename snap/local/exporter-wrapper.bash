@@ -2,8 +2,6 @@
 
 set -eu
 
-# TODO: create exporter.properties in charm
-# create exporteruser with read/describe ACLs
 PROPERTIES=$(cat "${SNAP_COMMON}"/exporter.properties)
 BOOTSTRAP_SERVERS=$(echo "${PROPERTIES}" | grep bootstrap.servers | sed 's/bootstrap\.servers=//g')
 SECURITY_PROTOCOL=$(echo "${PROPERTIES}" | grep security.protocol | sed 's/security\.protocol=//g')
