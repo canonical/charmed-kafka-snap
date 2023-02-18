@@ -166,6 +166,8 @@ apps:
       _wrapper_script: trogdor.sh
   exporter:
     command: kafka_exporter
+    daemon: simple
+    install-mode: disable
     plugs:
       - network
       - network-bind
