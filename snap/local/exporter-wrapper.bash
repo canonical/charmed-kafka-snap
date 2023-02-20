@@ -16,15 +16,15 @@ done
 if [ -n "$(echo "${SECURITY_PROTOCOL}" | grep "SSL")" ]
 then
     args+=" --tls.enabled"
+    args+=" --tls.ca-file=${SNAP_COMMON}/ca.pem"
+    args+=" --tls.cert-file=${SNAP_COMMON}/server.pem"
+    args+=" --tls.key-file=${SNAP_COMMON}/server.key"
 fi
 
 args+=" --sasl.enabled"
 args+=" --sasl.mechansim=scram-sha512"
 args+=" --sasl.username=exporter"
 args+=" --sasl.password=${PASSWORD}"
-args+=" --tls.ca-file=${SNAP_COMMON}/ca.pem"
-args+=" --tls.cert-file=${SNAP_COMMON}/server.pem"
-args+=" --tls.key-file=${SNAP_COMMON}/server.key"
 
 "{SNAP}"/kafka_exporter "${args[@]}"
 
