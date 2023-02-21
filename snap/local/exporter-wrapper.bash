@@ -2,6 +2,13 @@
 
 set -eu
 
+if [ ! -f "${SNAP_COMMON}"/exporter.properties ]
+then
+    echo "Missing exporter.properties from SNAP_COMMON"
+    exit 1
+fi
+
+
 PROPERTIES=$(cat "${SNAP_COMMON}"/exporter.properties)
 BOOTSTRAP_SERVERS=$(echo "${PROPERTIES}" | grep bootstrap.servers | sed 's/bootstrap\.servers=//g')
 SECURITY_PROTOCOL=$(echo "${PROPERTIES}" | grep security.protocol | sed 's/security\.protocol=//g')
