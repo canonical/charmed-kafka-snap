@@ -195,7 +195,10 @@ parts:
     override-build: |
       exporter="kafka_exporter-1.6.0.linux-amd64.tar.gz"
       curl -sLo "${exporter}" "https://github.com/danielqsj/kafka_exporter/releases/download/v1.6.0/${exporter}"
-      tar -xvf "${exporter}" -C "${CRAFT_PART_INSTALL}/opt/kafka" --strip-components=1
+      tar -xvf "${exporter}" --strip-components=1
+      cp kafka_exporter $CRAFT_PART_INSTALL/
+    organize:
+      kafka_exporter: opt/kafka/kafka_exporter
   prometheus-exporter:
     plugin: nil
     after: [kafka]
