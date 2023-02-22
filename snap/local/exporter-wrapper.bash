@@ -30,7 +30,7 @@ then
 fi
 
 args+=" --sasl.enabled"
-args+=" --sasl.mechansim=scram-sha512"
+args+=" --sasl.mechanism=scram-sha512"
 args+=" --sasl.username=${USERNAME}"
 args+=" --sasl.password=${PASSWORD}"
 
