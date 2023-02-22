@@ -33,5 +33,5 @@ args+=" --sasl.mechansim=scram-sha512"
 args+=" --sasl.username=exporter"
 args+=" --sasl.password=${PASSWORD}"
 
-"{SNAP}"/opt/kafka/kafka_exporter "${args[@]}"
+"${SNAP}"/opt/kafka/kafka_exporter "${args[@]}"
 
