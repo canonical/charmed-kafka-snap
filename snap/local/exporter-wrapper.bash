@@ -18,7 +18,7 @@ PASSWORD=$(echo $SASL_JAAS_CONFIG | grep -oP "password\=\"([a-zA-Z0-9]+)" | cut 
 
 for i in $(echo $BOOTSTRAP_SERVERS | tr "," "\n")
 do
-    args+=("--kafka.server=${i}")
+    args+=(" --kafka.server=${i}")
 done
 
 if [ -n "$(echo "${SECURITY_PROTOCOL}" | grep "SSL")" ]
