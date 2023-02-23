@@ -19,4 +19,11 @@ jobs:
       with:
         snap: ${{ steps.build.outputs.snap }}
         release: latest/edge
+    - name: Upload charmcraft logs
+      uses: actions/upload-artifact@v2
+      with:
+        name: charmcraft-logs
+        path: /home/runner/.local/state/charmcraft/log/charmcraft-log-*
+      if: failure()
+
 
