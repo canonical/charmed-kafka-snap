@@ -21,9 +21,8 @@ jobs:
       - id: dependencies 
         name: Upgrade linux deps
         run: |
-          sudo apt-get update
-          export DEBIAN_FRONTEND=noninteractive
-          sudo apt-get upgrade --yes
+          sudo apt update
+          sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes
 
       - id: snapcraft
         name: Build snap
