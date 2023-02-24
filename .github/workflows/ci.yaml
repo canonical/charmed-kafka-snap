@@ -21,9 +21,9 @@ jobs:
       - id: dependencies 
         name: Upgrade linux deps
         run: |
+          sudo apt-get update
           export DEBIAN_FRONTEND=noninteractive
-          apt-get update
-          apt-get upgrade --yes
+          sudo apt-get upgrade --yes
 
       - id: snapcraft
         name: Build snap
@@ -50,11 +50,11 @@ jobs:
 
       - name: Install snap file
         run: |
-          snap install charmed-kafka_${{env.VERSION}}_amd64.snap --dangerous
+          sudo snap install charmed-kafka_${{env.VERSION}}_amd64.snap --dangerous
 
       - name: Start Charmed-Kafka
         run: |
-          snap start charmed-kafka
+          sudo snap start charmed-kafka
           sleep 10
 
       - name: Check topic creation
