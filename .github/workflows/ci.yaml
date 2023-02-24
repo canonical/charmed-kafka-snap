@@ -22,6 +22,8 @@ jobs:
         name: Upgrade linux deps
         run: |
           sudo apt update
+          # https://askubuntu.com/questions/1276111/error-upgrading-grub-efi-amd64-signed-special-device-old-ssd-does-not-exist
+          sudo apt-mark hold grub-efi-amd64-signed grub-efi-amd64-bin
           sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes
 
       - id: snapcraft
