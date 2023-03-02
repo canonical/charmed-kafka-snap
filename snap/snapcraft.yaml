@@ -14,6 +14,13 @@ environment:
   JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-amd64
   PATH: $JAVA_HOME/bin:$PATH
 
+slots:
+  logs:
+    interface: content
+    source:
+      read:
+        - $SNAP_COMMON/log
+
 apps:
   charmed-kafka:
     command: start-kafka-wrapper.bash
