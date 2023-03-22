@@ -30,14 +30,34 @@ apps:
       - network
       - network-bind
       - removable-media
-  zookeeper:
-    command: start-zookeeper-wrapper.bash
-    daemon: simple
-    install-mode: disable
+  log-dirs:
+    command: script-wrapper.bash
     plugs:
       - network
       - network-bind
-      - removable-media
+    environment:
+      _wrapper_script: kafka-log-dirs.sh
+  storage:
+    command: script-wrapper.bash
+    plugs:
+      - network
+      - network-bind
+    environment:
+      _wrapper_script: storage.sh
+  consumer-perf-test:
+    command: script-wrapper.bash
+    plugs:
+      - network
+      - network-bind
+    environment:
+      _wrapper_script: kafka-consumer-perf-test.sh
+  producer-perf-test:
+    command: script-wrapper.bash
+    plugs:
+      - network
+      - network-bind
+    environment:
+      _wrapper_script: kafka-producer-perf-test.sh
   configs:
     command: script-wrapper.bash
     plugs:
