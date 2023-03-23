@@ -1,14 +1,20 @@
 name: charmed-kafka
 base: core22
 version: '3.3.2'
-summary: Apache Kafka is a distributed streaming platform
+summary: Apache Kafka in a snap.
 description: |
-    Kafka is generally used for two broad classes of applications:
-    - Building real-time streaming data pipelines that reliably get data between systems or applications
-    - Building real-time streaming applications that transform or react to the streams of data 
-
+  This is a snap that bundles Apache Kafka together with other tools of its ecosystem in order to be used in Charmed Operators, providing automated operations management from day 0 to day 2 on the Apache Kafka real-time stream processing, on top of a Virtual Machine cluster and K8s cluster. It is an open source, end-to-end, production ready data platform on top of cloud native technologies.
 grade: stable
 confinement: strict
+
+system-usernames:
+  snap_daemon: shared
+
+hooks:
+  install:
+    plugs:
+      - network
+      - network-bind
 
 environment:
   JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-amd64
@@ -216,16 +222,6 @@ parts:
       curl -o "${archive}" "https://downloads.apache.org/kafka/${SNAPCRAFT_PROJECT_VERSION}/${archive}"
       mkdir -p $CRAFT_PART_INSTALL/opt/kafka
       tar -xzvf "${archive}" -C "${CRAFT_PART_INSTALL}/opt/kafka" --strip-components=1
-  kafka-exporter:
-    plugin: nil
-    after: [kafka]
-    override-build: |
-      exporter="kafka_exporter-1.6.0.linux-amd64.tar.gz"
-      curl -sLo "${exporter}" "https://github.com/danielqsj/kafka_exporter/releases/download/v1.6.0/${exporter}"
-      tar -xvf "${exporter}" --strip-components=1
-      cp kafka_exporter $CRAFT_PART_INSTALL/
-    organize:
-      kafka_exporter: opt/kafka/kafka_exporter
   prometheus-exporter:
     plugin: nil
     after: [kafka]
