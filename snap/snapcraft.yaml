@@ -18,18 +18,18 @@ hooks:
 
 environment:
   JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-amd64
-  PATH: $JAVA_HOME/bin:$PATH
+  LOG_DIR: $SNAP_COMMON/var/log/kafka
 
 slots:
   logs:
     interface: content
     source:
       read:
-        - $SNAP_COMMON/log
+        - $SNAP_COMMON/var/log/kafka
 
 apps:
-  charmed-kafka:
-    command: start-kafka-wrapper.bash
+  daemon:
+    command: opt/kafka/start-wrapper.bash
     daemon: simple
     install-mode: disable
     plugs:
@@ -37,202 +37,194 @@ apps:
       - network-bind
       - removable-media
   log-dirs:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-log-dirs.sh
+      bin_script: kafka-log-dirs.sh
   storage:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: storage.sh
+      bin_script: storage.sh
   consumer-perf-test:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-consumer-perf-test.sh
+      bin_script: kafka-consumer-perf-test.sh
   producer-perf-test:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-producer-perf-test.sh
+      bin_script: kafka-producer-perf-test.sh
   configs:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-configs.sh
+      bin_script: kafka-configs.sh
   topics:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-topics.sh
+      bin_script: kafka-topics.sh
   console-consumer:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-console-consumer.sh
+      bin_script: kafka-console-consumer.sh
   console-producer:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-console-producer.sh
+      bin_script: kafka-console-producer.sh
   consumer-groups:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-consumer-groups.sh
+      bin_script: kafka-consumer-groups.sh
   get-offsets:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-get-offsets.sh
+      bin_script: kafka-get-offsets.sh
   reassign-partitions:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-reassign-partitions.sh
+      bin_script: kafka-reassign-partitions.sh
   replica-verification:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-replica-verification.sh
+      bin_script: kafka-replica-verification.sh
   zookeeper-shell:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: zookeeper-shell.sh
+      bin_script: zookeeper-shell.sh
   run-class:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-run-class.sh
+      bin_script: kafka-run-class.sh
   kafka-streams-application-reset:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-streams-application-reset.sh
+      bin_script: kafka-streams-application-reset.sh
   transactions:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-transactions.sh
+      bin_script: kafka-transactions.sh
   leader-election:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-leader-election.sh
+      bin_script: kafka-leader-election.sh
   dump-log:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-dump-log.sh
+      bin_script: kafka-dump-log.sh
   acls:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-acls.sh
+      bin_script: kafka-acls.sh
   cluster:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-cluster.sh
+      bin_script: kafka-cluster.sh
   verifiable-consumer:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-verifiable-consumer.sh
+      bin_script: kafka-verifiable-consumer.sh
   verifiable-producer:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: kafka-verifiable-producer.sh
+      bin_script: kafka-verifiable-producer.sh
   trogdor:
-    command: script-wrapper.bash
+    command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
     environment:
-      _wrapper_script: trogdor.sh
-  exporter:
-    command: exporter-wrapper.bash
-    daemon: simple
-    install-mode: disable
-    plugs:
-      - network
-      - network-bind
+      bin_script: trogdor.sh
 
 parts:
-  dependencies:
+  kafka:
     plugin: nil
+    source: https://downloads.apache.org/kafka/${SNAPCRAFT_PROJECT_VERSION}/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}.tgz
     stage-packages:
     - openjdk-17-jre-headless
+    - util-linux
     - libpsl5
     - curl
+    override-build: |
+      snapcraftctl build
+      cp -r ./* $SNAPCRAFT_PART_INSTALL
     override-prime: |
       snapcraftctl prime
       rm -vf usr/lib/jvm/java-17-openjdk-amd64/lib/security/cacerts
-  kafka:
-    plugin: nil
-    override-build: |
-      archive="kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}.tgz"
-      curl -o "${archive}" "https://downloads.apache.org/kafka/${SNAPCRAFT_PROJECT_VERSION}/${archive}"
-      mkdir -p $CRAFT_PART_INSTALL/opt/kafka
-      tar -xzvf "${archive}" -C "${CRAFT_PART_INSTALL}/opt/kafka" --strip-components=1
+      mkdir -p $SNAPCRAFT_PART_INSTALL/opt/kafka
   prometheus-exporter:
     plugin: nil
     after: [kafka]
     override-build: |
       curl -o jmx_prometheus_javaagent.jar "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.0/jmx_prometheus_javaagent-0.17.0.jar"
       EXPECTED_SHA="48ab23a7514f9de5d2ca0acbb8ed1573b3c2ecbef7c5dc4d37c4ba125e538199"
-      JAR_SHA=$(sha256sum jmx_prometheus_javaagent.jar | cut -d" " -f1)
+      JAR_SHA=$(sha256sum jmx_prometheus_javaagent.jar | cut -d " " -f1)
       if [ $JAR_SHA != $EXPECTED_SHA ]; then exit 1; fi
-      cp jmx_prometheus_javaagent.jar $CRAFT_PART_INSTALL/
+      cp jmx_prometheus_javaagent.jar $SNAPCRAFT_PART_INSTALL/
     organize:
-      jmx_prometheus_javaagent.jar: opt/kafka/extra/jmx_prometheus_javaagent.jar
+      jmx_prometheus_javaagent.jar: opt/kafka/jmx_prometheus_javaagent.jar
   wrapper:
     plugin: dump
     source: snap/local
