@@ -1,29 +1,17 @@
-name: Publish
-
 on:
+  workflow_call:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
-  publish-snapcraft:
+  publish:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - uses: snapcore/action-build@v1
-      id: build
-    - uses: snapcore/action-publish@v1
-      env:
-        SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
-      with:
-        snap: ${{ steps.build.outputs.snap }}
-        release: latest/edge
-    - name: Upload snapcraft logs
-      uses: actions/upload-artifact@v3
-      with:
-        name: snapcraft-logs
-        path: /home/runner/.cache/snapcraft/log/snapcraft-*
-      if: failure()
-
-
+      - uses: actions/checkout@v3
+      - uses: snapcore/action-build@v1
+        id: build
+      - uses: snapcore/action-publish@v1
+        env:
+          SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
+        with:
+          snap: ${{ steps.build.outputs.snap }}
+          release: ${{ github.ref_name }}
