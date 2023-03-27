@@ -10,11 +10,24 @@ To build locally, use `snapcraft --debug`
 
 ## Using the snap
 
-Install the snap (e.g., sudo snap install ./kafka_3.1.0_amd64.snap --dangerous
+Install the snap (e.g. `sudo snap install ./kafka_3.3.2_amd64.snap --dangerous`
 --devmode).
 
-You can run kafka with `snap start charmed-kafka` once the snap is installed.
-In a seperate shell, you can also run zookeeper with `snap start charmed-kafka.zookeeper`.
+To run the snap, you will require a running Apache ZooKeeper service. You can use the following:
+
+```bash
+# installing zookeeper
+sudo snap install charmed-zookeeper --channel 3/edge
+
+# copying default config
+sudo cp /snap/charmed-kafka/current/config/server.properties /var/snap/charmed-kafka/current/etc/kafka
+sudo cp /snap/charmed-zookeeper/current/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
+
+# starting services
+sudo snap start charmed-zookeeper.daemon
+sleep 5
+sudo snap start charmed-kafka.daemon
+```
 
 ### Hello, Kafka
 
@@ -36,16 +49,6 @@ Logs should be available at `/var/snap/charmed-kafka/common/log`.
 
 ### Configuration
 
-Place your custom kafka configuration in the snap common directory at
-`/var/snap/charmed-kafka/common/server.properties`. If such configuration is not
-available, the default upstream configuration will be used.
+Place your custom kafka configuration in the snap data directory at `/var/snap/charmed-kafka/current/etc/kafka/server.properties`.
 
-Place your custom zookeeper configuration in the snap common directory at
-`/var/snap/charmed-kafka/common/zookeeper.properties`. If such configuration is not
-available, the default upstream configuration will be used.
-
-If you want to use custom log4j properties, place your custom log4j properties
-file at the snap common directory at `/var/snap/charmed-kafka/common/log4j.properties`.
-
-To load additional environment variables for kafka, define your environment
-variables in a new file at `/var/snap/charmed-kafka/common/broker.env`.
+If you want to use custom log4j properties, place your custom log4j properties file at the snap data directory at `/var/snap/charmed-kafka/etc/kafka/log4j.properties`.
