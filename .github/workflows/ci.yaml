@@ -52,11 +52,21 @@ jobs:
       - name: Install snap file
         run: |
           sudo snap install charmed-kafka_${{env.VERSION}}_amd64.snap --dangerous
+          sudo snap install charmed-zookeeper --channel=3/edge
 
-      - name: Start Charmed-Kafka
+      - name: Set default config
         run: |
-          sudo snap start charmed-kafka
-          sleep 10
+          sudo mkdir -p /var/snap/charmed-kafka/current/etc/kafka
+          sudo mkdir -p /var/snap/charmed-zookeeper/current/etc/zookeeper
+          sudo cp /snap/charmed-kafka/current/config/server.properties /var/snap/charmed-kafka/current/etc/kafka
+          sudo cp /snap/charmed-zookeeper/current/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
+
+      - name: Start snap services
+        run: |
+          sudo snap start charmed-zookeeper.daemon
+          sleep 5
+          sudo snap start charmed-kafka.daemon
+          sleep 5
 
       - name: Check topic creation
         run: |
