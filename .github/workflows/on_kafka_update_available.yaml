@@ -35,10 +35,10 @@ jobs:
       - id: check-latest-version
         name: Check latest stable Kafka version available for download
         run: |
-          LATEST_STABLE_SPARK_VERSION=$(curl --silent https://downloads.apache.org/kafka/ | grep  "\[DIR\]" | cut -d'>' -f3 | cut -d'/' -f1  | grep "^${{ steps.get-current-version.outputs.track }}" | sort | tail -n 1)
+          LATEST_STABLE_VERSION=$(curl --silent https://downloads.apache.org/kafka/ | grep  "\[DIR\]" | cut -d'>' -f3 | cut -d'/' -f1  | grep "^${{ steps.get-current-version.outputs.track }}" | sort | tail -n 1)
           CURRENT_PUBLISHED_VERSION=${{ steps.get-current-version.outputs.version }}
-          STATUSCODE=$(curl --silent --head https://downloads.apache.org/kafka/${LATEST_STABLE_SPARK_VERSION}/kafka_2.13-${LATEST_STABLE_SPARK_VERSION}.tgz | head -n 1 | cut -d' ' -f2)
-          if  [[ ${LATEST_STABLE_SPARK_VERSION} != ${CURRENT_PUBLISHED_VERSION} ]] && [[ ${STATUSCODE} -eq 200 ]]
+          STATUSCODE=$(curl --silent --head https://downloads.apache.org/kafka/${LATEST_STABLE_VERSION}/kafka_2.13-${LATEST_STABLE_VERSION}.tgz | head -n 1 | cut -d' ' -f2)
+          if  [[ ${LATEST_STABLE_VERSION} != ${CURRENT_PUBLISHED_VERSION} ]] && [[ ${STATUSCODE} -eq 200 ]]
             then 
               echo "decision=1" >> $GITHUB_OUTPUT
               echo "New Kafka version available....."
@@ -46,7 +46,7 @@ jobs:
               echo "decision=0" >> $GITHUB_OUTPUT
               echo "No updates to Kafka detected!"
           fi
-          echo "version=${LATEST_STABLE_SPARK_VERSION}" >> $GITHUB_OUTPUT
+          echo "version=${LATEST_STABLE_VERSION}" >> $GITHUB_OUTPUT
     outputs:
       decision: ${{ steps.check-latest-version.outputs.decision }}
       latest: ${{ steps.check-latest-version.outputs.version }}
