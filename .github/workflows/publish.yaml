@@ -1,3 +1,5 @@
+name: Publish new Kafka SNAP revision
+
 on:
   push:
     branches:
