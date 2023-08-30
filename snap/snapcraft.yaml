@@ -197,6 +197,8 @@ apps:
       - network-bind
     environment:
       bin_script: trogdor.sh
+  keytool:
+    command: usr/lib/jvm/java-17-openjdk-amd64/bin/keytool
 
 parts:
   kafka:
