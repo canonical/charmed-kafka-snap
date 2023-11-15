@@ -15,6 +15,7 @@ hooks:
     plugs:
       - network
       - network-bind
+      - mount-observe
 
 environment:
   JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-amd64
@@ -36,11 +37,13 @@ apps:
       - network
       - network-bind
       - removable-media
+      - mount-observe
   log-dirs:
     command: opt/kafka/bin-wrapper.bash
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-log-dirs.sh
   storage:
@@ -48,6 +51,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: storage.sh
   consumer-perf-test:
@@ -55,6 +59,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-consumer-perf-test.sh
   producer-perf-test:
@@ -62,6 +67,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-producer-perf-test.sh
   configs:
@@ -69,6 +75,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-configs.sh
   topics:
@@ -76,6 +83,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-topics.sh
   console-consumer:
@@ -83,6 +91,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-console-consumer.sh
   console-producer:
@@ -90,6 +99,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-console-producer.sh
   consumer-groups:
@@ -97,6 +107,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-consumer-groups.sh
   get-offsets:
@@ -104,6 +115,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-get-offsets.sh
   reassign-partitions:
@@ -111,6 +123,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-reassign-partitions.sh
   replica-verification:
@@ -118,6 +131,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-replica-verification.sh
   zookeeper-shell:
@@ -125,6 +139,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: zookeeper-shell.sh
   run-class:
@@ -132,6 +147,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-run-class.sh
   kafka-streams-application-reset:
@@ -139,6 +155,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-streams-application-reset.sh
   transactions:
@@ -146,6 +163,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-transactions.sh
   leader-election:
@@ -153,6 +171,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-leader-election.sh
   dump-log:
@@ -160,6 +179,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-dump-log.sh
   acls:
@@ -167,6 +187,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-acls.sh
   cluster:
@@ -174,6 +195,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-cluster.sh
   verifiable-consumer:
@@ -181,6 +203,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-verifiable-consumer.sh
   verifiable-producer:
@@ -188,6 +211,7 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: kafka-verifiable-producer.sh
   trogdor:
@@ -195,10 +219,13 @@ apps:
     plugs:
       - network
       - network-bind
+      - mount-observe
     environment:
       bin_script: trogdor.sh
   keytool:
     command: usr/lib/jvm/java-17-openjdk-amd64/bin/keytool
+    plugs:
+      - mount-observe
 
 parts:
   kafka:
