@@ -203,7 +203,7 @@ apps:
 parts:
   kafka:
     plugin: nil
-    source: https://github.com/deusebio/central-uploader/releases/download/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0-20231115211748.tgz
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0-20231121145749.tgz
     stage-packages:
     - openjdk-17-jre-headless
     - util-linux
