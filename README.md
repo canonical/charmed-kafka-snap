@@ -1,8 +1,7 @@
-# charmed-kafka-snap
+# Charmed Kafka snap repository.
 
-Charmed Kafka snap repository.
-
-This snap is based on the kafka snap: https://git.launchpad.net/kafka-snap/
+[![CharmHub Badge](https://snapcraft.io/charmed-kafka/badge.svg)](https://snapcraft.io/charmed-kafka)
+[![Release](https://github.com/canonical/charmed-kafka-snap/actions/workflows/publish.yaml/badge.svg)](https://github.com/canonical/charmed-kafka-snap/actions/workflows/publish.yaml)
 
 ## Building
 
@@ -10,7 +9,7 @@ To build locally, use `snapcraft --debug`
 
 ## Using the snap
 
-Install the snap (e.g. `sudo snap install ./kafka_3.3.2_amd64.snap --dangerous`
+Install the snap (e.g. `sudo snap install ./charmed-kafka_3.6.0_amd64.snap --dangerous`
 --devmode).
 
 To run the snap, you will require a running Apache ZooKeeper service. You can use the following:
