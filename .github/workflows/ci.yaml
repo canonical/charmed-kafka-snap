@@ -56,7 +56,7 @@ jobs:
       - name: Install snap file
         run: |
           sudo snap install charmed-kafka_${{ needs.build.outputs.version }}_amd64.snap --dangerous
-          sudo snap install charmed-zookeeper --channel=3/edge
+          sudo snap install charmed-zookeeper --channel=3/edge/dpe-2196-logging
 
       - name: Set default config
         run: |
