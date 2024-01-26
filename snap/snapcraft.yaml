@@ -231,6 +231,8 @@ parts:
   kafka:
     plugin: nil
     source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0-20231121145749.tgz
+    build-packages:
+    - ca-certificates-java
     stage-packages:
     - openjdk-17-jre-headless
     - util-linux
@@ -238,14 +240,9 @@ parts:
     - curl
     override-build: |
       snapcraftctl build
-
       mkdir -p $SNAPCRAFT_PART_INSTALL/opt/kafka
       mkdir -p $SNAPCRAFT_PART_INSTALL/opt/kafka
-
       cp -r ./* $SNAPCRAFT_PART_INSTALL/opt/kafka
-    override-prime: |
-      snapcraftctl prime
-      rm -vf usr/lib/jvm/java-17-openjdk-amd64/lib/security/cacerts
   prometheus-exporter:
     plugin: nil
     after: [kafka]
@@ -257,7 +254,32 @@ parts:
       cp jmx_prometheus_javaagent.jar $SNAPCRAFT_PART_INSTALL/
     organize:
       jmx_prometheus_javaagent.jar: opt/kafka/libs/jmx_prometheus_javaagent.jar
-
+  strimzi-oauth-libs:
+    plugin: nil
+    after: [kafka]
+    override-build: |
+      # provider jar version expected_sha
+      JARS=(
+        "io/strimzi kafka-oauth-common 0.14.0 9a7ede82ba018d222caf88eea39153c29f6e6bad29683d6e5b4c59d888e0ead0"
+        "io/strimzi kafka-oauth-client 0.14.0 0bc0d53f864204aeb9fd53043314582b219bb4fa48a86c2f0b330a24cc33692d"
+        "io/strimzi kafka-oauth-server 0.14.0 7d22afe08f612272ab59bdf8a1c971ee1fc8dd97cab8f32d097b50ae41216269"
+        "io/strimzi kafka-oauth-server-plain 0.14.0 3d88dd85ec64fd027f7779d405817cbd653e5e88baddcd51af45d3b9876de091"
+        "com/nimbusds nimbus-jose-jwt 9.37.1 95c19102a3f56e5ad818561710286d09e9e44f13656f9e991b2eb5a451493476"
+      )
+      for ENTRY in "${JARS[@]}"; do
+        URL_BASE=https://repo1.maven.org/maven2
+        PROVIDER=$(echo "$ENTRY" | awk '{print $1}')
+        JAR_NAME=$(echo "$ENTRY" | awk '{print $2}')
+        VERSION=$(echo "$ENTRY" | awk '{print $3}')
+        EXPECTED_SHA=$(echo "$ENTRY" | awk '{print $4}')
+        JAR_FILE="$JAR_NAME-$VERSION.jar"
+        URL="$URL_BASE/$PROVIDER/$JAR_NAME/$VERSION/$JAR_FILE"
+        curl -O "$URL"
+        ACTUAL_SHA=$(sha256sum "$JAR_FILE" | awk '{print $1}')
+        [ $ACTUAL_SHA != $EXPECTED_SHA ] && exit 1
+      done
+      DEST=$SNAPCRAFT_PRIME/opt/kafka/libs
+      mkdir -p $DEST && cp *.jar $DEST
   wrapper:
     plugin: dump
     source: snap/local

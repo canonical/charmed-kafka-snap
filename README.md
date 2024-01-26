@@ -9,8 +9,8 @@ To build locally, use `snapcraft --debug`
 
 ## Using the snap
 
-Install the snap (e.g. `sudo snap install ./charmed-kafka_3.6.0_amd64.snap --dangerous`
---devmode).
+Install the snap (e.g. `sudo snap install ./charmed-kafka_3.6.0_amd64.snap --dangerous --devmode`
+).
 
 To run the snap, you will require a running Apache ZooKeeper service. You can use the following:
 
@@ -19,8 +19,8 @@ To run the snap, you will require a running Apache ZooKeeper service. You can us
 sudo snap install charmed-zookeeper --channel 3/edge
 
 # copying default config
-sudo cp /snap/charmed-kafka/current/config/server.properties /var/snap/charmed-kafka/current/etc/kafka
-sudo cp /snap/charmed-zookeeper/current/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
+sudo cp /snap/charmed-kafka/current/opt/kafka/config/server.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
+sudo cp /snap/charmed-zookeeper/current/opt/zookeeper/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
 
 # starting services
 sudo snap start charmed-zookeeper.daemon
@@ -44,7 +44,7 @@ Write any data to the topic, then halt with `ctrl-C`.
 charmed-kafka.console-consumer --topic quickstart-events --from-beginning --bootstrap-server localhost:9092
 ```
 
-Logs should be available at `/var/snap/charmed-kafka/common/log`.
+Logs should be available at `/var/snap/charmed-kafka/common/var/log/kafka`.
 
 ### Configuration
 
