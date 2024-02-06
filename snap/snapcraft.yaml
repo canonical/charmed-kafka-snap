@@ -226,6 +226,12 @@ apps:
     command: usr/lib/jvm/java-18-openjdk-amd64/bin/keytool
     plugs:
       - mount-observe
+  cruise-control:
+    command:  opt/cruise_control/bin/kafka-cruise-control-start.sh
+    plugs:
+      - network
+      - network-bind
+      - mount-observe
 
 parts:
   cruise-control:
@@ -240,7 +246,6 @@ parts:
     - cruise-control-client
     - cruise-control-metrics-reporter
     - cruise-control-core
-    - config
     - kafka-cruise-control-start.sh
     - kafka-cruise-control-stop.sh
     override-prime: |
@@ -250,8 +255,6 @@ parts:
       cp $CRAFT_STAGE/kafka-cruise-control-start.sh $CRAFT_PRIME/opt/cruise-control/bin
       cp $CRAFT_STAGE/kafka-cruise-control-stop.sh $CRAFT_PRIME/opt/cruise-control/bin
       cp -r $CRAFT_STAGE/cruise-control-client $CRAFT_PRIME/opt/cruise-control/bin
-
-      cp -r $CRAFT_STAGE/config $CRAFT_PRIME/opt/cruise-control
 
       cp -r $CRAFT_STAGE/cruise-control/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
       cp -r $CRAFT_STAGE/cruise-control-core/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
