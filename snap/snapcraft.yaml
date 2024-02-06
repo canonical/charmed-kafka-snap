@@ -38,6 +38,14 @@ apps:
       - network-bind
       - removable-media
       - mount-observe
+  cruise-control:
+    command:  opt/cruise_control/bin/kafka-cruise-control-start.sh
+    daemon: simple
+    install-mode: disable
+    plugs:
+      - network
+      - network-bind
+      - mount-observe
   log-dirs:
     command: opt/kafka/bin/bin-wrapper.bash
     plugs:
@@ -225,12 +233,6 @@ apps:
   keytool:
     command: usr/lib/jvm/java-18-openjdk-amd64/bin/keytool
     plugs:
-      - mount-observe
-  cruise-control:
-    command:  opt/cruise_control/bin/kafka-cruise-control-start.sh
-    plugs:
-      - network
-      - network-bind
       - mount-observe
 
 parts:
