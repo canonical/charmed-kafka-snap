@@ -247,8 +247,8 @@ parts:
     plugin: nil
     after: [kafka]
     override-build: |
-      curl -o jmx_prometheus_javaagent.jar "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.0/jmx_prometheus_javaagent-0.17.0.jar"
-      EXPECTED_SHA="48ab23a7514f9de5d2ca0acbb8ed1573b3c2ecbef7c5dc4d37c4ba125e538199"
+      curl -o jmx_prometheus_javaagent.jar "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar"
+      EXPECTED_SHA="fb569b5cb18494c22561a1eec10cb26e6117f057f6a5ac0ffe53dc16213a1dde"
       JAR_SHA=$(sha256sum jmx_prometheus_javaagent.jar | cut -d " " -f1)
       if [ $JAR_SHA != $EXPECTED_SHA ]; then exit 1; fi
       cp jmx_prometheus_javaagent.jar $SNAPCRAFT_PART_INSTALL/
