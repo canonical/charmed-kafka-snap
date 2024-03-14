@@ -1,6 +1,6 @@
 name: charmed-kafka
 base: core22
-version: '3.6.0'
+version: '3.6.1'
 summary: Apache Kafka in a snap.
 description: |
   This is a snap that bundles Apache Kafka together with other tools of its ecosystem in order to be used in Charmed Operators, providing automated operations management from day 0 to day 2 on the Apache Kafka real-time stream processing, on top of a Virtual Machine cluster and K8s cluster. It is an open source, end-to-end, production ready data platform on top of cloud native technologies.
@@ -18,7 +18,7 @@ hooks:
       - mount-observe
 
 environment:
-  JAVA_HOME: $SNAP/usr/lib/jvm/java-17-openjdk-amd64
+  JAVA_HOME: $SNAP/usr/lib/jvm/java-18-openjdk-amd64
   LOG_DIR: $SNAP_COMMON/var/log/kafka
 
 slots:
@@ -223,18 +223,18 @@ apps:
     environment:
       bin_script: trogdor.sh
   keytool:
-    command: usr/lib/jvm/java-17-openjdk-amd64/bin/keytool
+    command: usr/lib/jvm/java-18-openjdk-amd64/bin/keytool
     plugs:
       - mount-observe
 
 parts:
   kafka:
     plugin: nil
-    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0-20231121145749.tgz
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0-20240308100934.tgz
     build-packages:
     - ca-certificates-java
     stage-packages:
-    - openjdk-17-jre-headless
+    - openjdk-18-jre-headless
     - util-linux
     - libpsl5
     - curl
@@ -247,8 +247,8 @@ parts:
     plugin: nil
     after: [kafka]
     override-build: |
-      curl -o jmx_prometheus_javaagent.jar "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.17.0/jmx_prometheus_javaagent-0.17.0.jar"
-      EXPECTED_SHA="48ab23a7514f9de5d2ca0acbb8ed1573b3c2ecbef7c5dc4d37c4ba125e538199"
+      curl -o jmx_prometheus_javaagent.jar "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.18.0/jmx_prometheus_javaagent-0.18.0.jar"
+      EXPECTED_SHA="fb569b5cb18494c22561a1eec10cb26e6117f057f6a5ac0ffe53dc16213a1dde"
       JAR_SHA=$(sha256sum jmx_prometheus_javaagent.jar | cut -d " " -f1)
       if [ $JAR_SHA != $EXPECTED_SHA ]; then exit 1; fi
       cp jmx_prometheus_javaagent.jar $SNAPCRAFT_PART_INSTALL/
