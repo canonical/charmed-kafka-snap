@@ -251,11 +251,8 @@ parts:
     - cruise-control
     - cruise-control-metrics-reporter
     override-prime: |
-      mkdir -p $CRAFT_PRIME/opt/cruise-control/bin
       mkdir -p $CRAFT_PRIME/opt/cruise-control/libs
 
-      cp $CRAFT_STAGE/kafka-cruise-control-start.sh $CRAFT_PRIME/opt/cruise-control/bin
-      cp $CRAFT_STAGE/kafka-cruise-control-stop.sh $CRAFT_PRIME/opt/cruise-control/bin
       cp $CRAFT_STAGE/cruise-control/build/dependant-libs/* $CRAFT_PRIME/opt/cruise-control/libs
       cp $CRAFT_STAGE/cruise-control/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
       cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
