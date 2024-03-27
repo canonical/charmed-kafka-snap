@@ -246,26 +246,19 @@ parts:
     build-packages:
     - openjdk-11-jdk
     override-build: |
-      ./gradlew jar && cp -r ./* $CRAFT_PART_INSTALL
+      ./gradlew jar && ./gradlew copyDependantLibs && cp -r ./* $CRAFT_PART_INSTALL
     stage:
     - cruise-control
-    - cruise-control-client
     - cruise-control-metrics-reporter
-    - cruise-control-core
-    - kafka-cruise-control-start.sh
-    - kafka-cruise-control-stop.sh
     override-prime: |
-      mkdir -p $CRAFT_PRIME/opt/cruise-control/libs
       mkdir -p $CRAFT_PRIME/opt/cruise-control/bin
+      mkdir -p $CRAFT_PRIME/opt/cruise-control/libs
 
       cp $CRAFT_STAGE/kafka-cruise-control-start.sh $CRAFT_PRIME/opt/cruise-control/bin
       cp $CRAFT_STAGE/kafka-cruise-control-stop.sh $CRAFT_PRIME/opt/cruise-control/bin
-      cp -r $CRAFT_STAGE/cruise-control-client $CRAFT_PRIME/opt/cruise-control/bin
-
-      cp -r $CRAFT_STAGE/cruise-control/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
-      cp -r $CRAFT_STAGE/cruise-control-core/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
-      cp -r $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
-      cp -r $CRAFT_STAGE/cruise-control/build/dependant-libs/* $CRAFT_PRIME/opt/cruise-control/libs
+      cp $CRAFT_STAGE/cruise-control/build/dependant-libs/* $CRAFT_PRIME/opt/cruise-control/libs
+      cp $CRAFT_STAGE/cruise-control/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
+      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
 
   kafka:
     plugin: nil
@@ -285,7 +278,7 @@ parts:
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/opt/kafka/libs
-      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter-2.5.136-SNAPSHOT.jar $CRAFT_PRIME/opt/kafka/libs
+      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter-* $CRAFT_PRIME/opt/kafka/libs
 
   prometheus-exporter:
     plugin: nil
