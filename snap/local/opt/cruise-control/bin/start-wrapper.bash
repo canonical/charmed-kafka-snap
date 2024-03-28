@@ -3,8 +3,10 @@
 set -e
 
 if [ "x$KAFKA_LOG4J_OPTS" = "x" ]; then
-    export KAFKA_LOG4J_OPTS="-Dcruisecontrol.logs.dir=$LOG_DIR -Dlog4j.configuration=file:${SNAP_DATA}/etc/cruise-control/log4j.properties"
+    export KAFKA_LOG4J_OPTS="-Dcruisecontrol.logs.dir=${LOG_DIR} -Dlog4j.configurationFile=${SNAP_DATA}/etc/cruise-control/log4j.properties"
 fi
+
+export KAFKA_OPTS="-Djava.security.auth.login.config=/var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.jaas"
 
 "${SNAP}"/usr/bin/setpriv \
     --clear-groups \
