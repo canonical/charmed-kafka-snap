@@ -1,0 +1,12 @@
+Client {
+    org.apache.zookeeper.server.auth.DigestLoginModule required
+    username="relation-6"
+    password="0NMZsBGhd6yoQLVhUNu03LliVdB4HErW";
+};
+
+KafkaClient {
+    org.apache.kafka.common.security.scram.ScramLoginModule required
+    username="admin"
+    password="GwNjX8CTd0VHXBEoVlUz1ObWB3LaAOi8";
+};
+

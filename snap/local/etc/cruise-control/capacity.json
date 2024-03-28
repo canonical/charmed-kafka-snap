@@ -1,0 +1,34 @@
+{
+  "brokerCapacities":[
+    {
+      "brokerId": "0",
+      "capacity": {
+        "DISK": {"/var/snap/charmed-kafka/common/var/lib/kafka/data/3": "500000"},
+        "CPU": "100",
+        "NW_IN": "50000",
+        "NW_OUT": "50000"
+      },
+      "doc": "This overrides the capacity for broker 0. This broker is not a JBOD broker."
+    },
+    {
+      "brokerId": "1",
+      "capacity": {
+        "DISK": {"/var/snap/charmed-kafka/common/var/lib/kafka/data/4": "500000"},
+        "CPU": "100",
+        "NW_IN": "50000",
+        "NW_OUT": "50000"
+      },
+      "doc": "This overrides the capacity for broker 1. This broker is not a JBOD broker."
+    },
+    {
+      "brokerId": "2",
+      "capacity": {
+        "DISK": {"/var/snap/charmed-kafka/common/var/lib/kafka/data/5": "500000"},
+        "CPU": "100",
+        "NW_IN": "50000",
+        "NW_OUT": "50000"
+      },
+      "doc": "This overrides the capacity for broker 2. This broker is not a JBOD broker."
+    }
+  ]
+}
