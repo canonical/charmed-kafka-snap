@@ -10,30 +10,31 @@
 
 set -eux
 
-export COMPONENT=kafka
+for COMPONENT in kafka cruise-control
+do
+    export CONF="${SNAP_DATA}"/etc/$COMPONENT
+    export LOGS="${SNAP_COMMON}"/var/log/$COMPONENT
+    export DATA="${SNAP_COMMON}"/var/lib/$COMPONENT
 
-export CONF="${SNAP_DATA}"/etc/$COMPONENT
-export LOGS="${SNAP_COMMON}"/var/log/$COMPONENT
-export DATA="${SNAP_COMMON}"/var/lib/$COMPONENT
-
-if [stat -c '%u' "$DATA" == 0 -o ! -d "$DATA"]; then
+    mkdir -p $CONF
+    mkdir -p $LOGS
     mkdir -p $DATA
-    mkdir -p $LOGS
 
-    chmod -R 770 "${SNAP_COMMON}"
+    # setting dir permissions given re-attached storage
+    if [stat -c '%u' "$DATA" == 0 -o ! -d "$DATA"]; then
+        chmod -R 770 "${SNAP_COMMON}"
     chown -R 584788:root "${SNAP_COMMON}"
-    chmod 750 "${DATA}"
-    chown 584788:root "${DATA}"
-else
-    mkdir -p $LOGS
-    chmod -R 770 "${LOGS}"
-    chown -R 584788:root "${LOGS}"
-fi
+        chmod 750 "${DATA}"
+        chown 584788:root "${DATA}"
+    else
+        chmod -R 770 "${LOGS}"
+        chown -R 584788:root "${LOGS}"
+    fi
 
-mkdir -p $CONF
+    # copying default config from squashfs
+    cp "${SNAP}"/etc/$COMPONENT/* $CONF
+done
 
-cp "${SNAP}"/etc/$COMPONENT/* $CONF
-
+# setting blanket permissions for the installing snap data dir
 chmod -R 770 "${SNAP_DATA}"/*
-
 chown -R 584788:root "${SNAP_DATA}"/*
