@@ -87,6 +87,6 @@ jobs:
       - name: Check CruiseControl state
         run: |
           state=$(curl http://localhost:9090/kafkacruisecontrol/state)
-          if [[ $state != *"state: RUNNING"* )]]; then
+          if [ "$state" != *"state: RUNNING"* ]; then
               exit 1
           fi
