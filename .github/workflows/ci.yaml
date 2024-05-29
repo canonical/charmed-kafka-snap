@@ -74,8 +74,6 @@ jobs:
           sleep 5
           sudo snap start charmed-kafka.daemon
           sleep 5
-          sudo snap start charmed-kafka.cruise-control
-          sleep 20
 
       - name: Check topic creation
         run: |
@@ -86,6 +84,8 @@ jobs:
 
       - name: Check CruiseControl state
         run: |
+          sudo snap start charmed-kafka.cruise-control
+          sleep 20
           state=$(curl http://localhost:9090/kafkacruisecontrol/state)
           if [ "$state" != *"state: RUNNING"* ]; then
               exit 1
