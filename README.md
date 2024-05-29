@@ -51,3 +51,26 @@ Logs should be available at `/var/snap/charmed-kafka/common/var/log/kafka`.
 Place your custom kafka configuration in the snap data directory at `/var/snap/charmed-kafka/current/etc/kafka/server.properties`.
 
 If you want to use custom log4j properties, place your custom log4j properties file at the snap data directory at `/var/snap/charmed-kafka/etc/kafka/log4j.properties`.
+
+### Cruise Control
+
+To get started with Cruise Control, on a local system already running the Kafka and ZooKeeper services, you can use the following:
+
+```bash
+# copying necessary configuration files
+sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/cruisecontrol.properties /var/snap/charmed-kafka/current/etc/cruise-control
+sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/capacityJBOD.json /var/snap/charmed-kafka/current/etc/cruise-control
+
+# overriding defaults
+sudo sed -i -e 's/sample.store.topic.replication.factor=2/sample.store.topic.replication.factor=1/g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+sudo sed -i -e 's|capacity.config.file=config/capacityJBOD.json|capacity.config.file=/var/snap/charmed-kafka/current/etc/cruise-control/capacityJBOD.json|g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+
+# starting services
+sudo snap start charmed-kafka.cruise-control
+```
+
+Then, after a little time, you can interact with the API webserver using the following:
+
+```bash
+curl http://localhost:9090/kafkacruisecontrol/state
+```
