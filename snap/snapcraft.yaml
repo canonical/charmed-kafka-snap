@@ -252,14 +252,18 @@ parts:
     override-build: |
       ./gradlew jar && ./gradlew copyDependantLibs && cp -r ./* $CRAFT_PART_INSTALL
     stage:
+    - config
     - cruise-control
     - cruise-control-metrics-reporter
     override-prime: |
       mkdir -p $CRAFT_PRIME/opt/cruise-control/libs
+      mkdir -p $CRAFT_PRIME/opt/cruise-control/config
 
       cp $CRAFT_STAGE/cruise-control/build/dependant-libs/* $CRAFT_PRIME/opt/cruise-control/libs
       cp $CRAFT_STAGE/cruise-control/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
       cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
+
+      cp $CRAFT_STAGE/config/* $CRAFT_PRIME/opt/cruise-control/config
 
   kafka:
     plugin: nil
