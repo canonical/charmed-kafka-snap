@@ -19,24 +19,40 @@ hooks:
 
 environment:
   JAVA_HOME: $SNAP/usr/lib/jvm/java-18-openjdk-amd64
-  LOG_DIR: $SNAP_COMMON/var/log/kafka
 
 slots:
-  logs:
+  kafka-logs:
     interface: content
     source:
       read:
         - $SNAP_COMMON/var/log/kafka
+  cc-logs:
+    interface: content
+    source:
+      read:
+        - $SNAP_COMMON/var/log/cruise-control
 
 apps:
   daemon:
     command: opt/kafka/bin/start-wrapper.bash
     daemon: simple
     install-mode: disable
+    environment:
+      LOG_DIR: $SNAP_COMMON/var/log/kafka
     plugs:
       - network
       - network-bind
       - removable-media
+      - mount-observe
+  cruise-control:
+    command:  opt/cruise-control/bin/start-wrapper.bash
+    daemon: simple
+    install-mode: disable
+    environment:
+      LOG_DIR: $SNAP_COMMON/var/log/cruise-control
+    plugs:
+      - network
+      - network-bind
       - mount-observe
   log-dirs:
     command: opt/kafka/bin/bin-wrapper.bash
@@ -228,9 +244,31 @@ apps:
       - mount-observe
 
 parts:
+  cruise-control:
+    plugin: nil
+    source: https://github.com/linkedin/cruise-control.git
+    build-packages:
+    - openjdk-11-jdk
+    override-build: |
+      ./gradlew jar && ./gradlew copyDependantLibs && cp -r ./* $CRAFT_PART_INSTALL
+    stage:
+    - config
+    - cruise-control
+    - cruise-control-metrics-reporter
+    override-prime: |
+      mkdir -p $CRAFT_PRIME/opt/cruise-control/libs
+      mkdir -p $CRAFT_PRIME/opt/cruise-control/config
+
+      cp $CRAFT_STAGE/cruise-control/build/dependant-libs/* $CRAFT_PRIME/opt/cruise-control/libs
+      cp $CRAFT_STAGE/cruise-control/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
+      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/* $CRAFT_PRIME/opt/cruise-control/libs
+
+      cp $CRAFT_STAGE/config/* $CRAFT_PRIME/opt/cruise-control/config
+
   kafka:
     plugin: nil
     source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu0-20240308100934.tgz
+    after: [cruise-control]
     build-packages:
     - ca-certificates-java
     stage-packages:
@@ -239,10 +277,14 @@ parts:
     - libpsl5
     - curl
     override-build: |
-      snapcraftctl build
-      mkdir -p $SNAPCRAFT_PART_INSTALL/opt/kafka
-      mkdir -p $SNAPCRAFT_PART_INSTALL/opt/kafka
-      cp -r ./* $SNAPCRAFT_PART_INSTALL/opt/kafka
+      craftctl default
+      mkdir -p $CRAFT_PART_INSTALL/opt/kafka
+      cp -r ./* $CRAFT_PART_INSTALL/opt/kafka
+    override-prime: |
+      craftctl default
+      mkdir -p $CRAFT_PRIME/opt/kafka/libs
+      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter-* $CRAFT_PRIME/opt/kafka/libs
+
   prometheus-exporter:
     plugin: nil
     after: [kafka]
@@ -254,6 +296,7 @@ parts:
       cp jmx_prometheus_javaagent.jar $SNAPCRAFT_PART_INSTALL/
     organize:
       jmx_prometheus_javaagent.jar: opt/kafka/libs/jmx_prometheus_javaagent.jar
+
   strimzi-oauth-libs:
     plugin: nil
     after: [kafka]

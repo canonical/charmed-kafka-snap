@@ -60,10 +60,13 @@ jobs:
 
       - name: Set default config
         run: |
-          sudo mkdir -p /var/snap/charmed-kafka/current/etc/kafka
-          sudo mkdir -p /var/snap/charmed-zookeeper/current/etc/zookeeper
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/server.properties /var/snap/charmed-kafka/current/etc/kafka
           sudo cp /snap/charmed-zookeeper/current/opt/zookeeper/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
+
+          sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/cruisecontrol.properties /var/snap/charmed-kafka/current/etc/cruise-control
+          sudo sed -i -e 's/sample.store.topic.replication.factor=2/sample.store.topic.replication.factor=1/g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+          sudo sed -i -e 's|capacity.config.file=config/capacityJBOD.json|capacity.config.file=/var/snap/charmed-kafka/current/etc/cruise-control/capacityJBOD.json|g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+          sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/capacityJBOD.json /var/snap/charmed-kafka/current/etc/cruise-control
 
       - name: Start snap services
         run: |
@@ -78,3 +81,9 @@ jobs:
           if [ "$topic_creation" != "Created topic test." ]; then
               exit 1
           fi
+
+      - name: Check CruiseControl state
+        run: |
+          sudo snap start charmed-kafka.cruise-control
+          sleep 20
+          curl -s http://localhost:9090/kafkacruisecontrol/state | grep "state: RUNNING"
