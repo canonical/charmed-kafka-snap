@@ -86,14 +86,4 @@ jobs:
         run: |
           sudo snap start charmed-kafka.cruise-control
           sleep 20
-          state=$(curl http://localhost:9090/kafkacruisecontrol/state)
-          echo $state
-          echo $(sudo cat /var/snap/charmed-kafka/common/var/log/cruise-control/cruisecontrol.log)
-          sudo snap logs charmed-kafka.daemon
-          sudo snap logs charmed-kafka.cruise-control
-          snap services
-          state=$(curl http://localhost:9090/kafkacruisecontrol/state)
-          echo $state
-          if [ "$state" != *"state: RUNNING"* ]; then
-              exit 1
-          fi
+          curl -s http://localhost:9090/kafkacruisecontrol/state | grep "state: RUNNING"
