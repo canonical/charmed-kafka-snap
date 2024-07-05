@@ -108,7 +108,7 @@ jobs:
         run: |
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/kraft/server.properties /var/snap/charmed-kafka/current/etc/kafka
 
-          sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
           uuid=$(charmed-kafka.storage random-uuid)
           charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
 
