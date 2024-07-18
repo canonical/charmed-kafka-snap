@@ -69,7 +69,7 @@ apps:
       - network-bind
       - mount-observe
     environment:
-      bin_script: storage.sh
+      bin_script: kafka-storage.sh
   consumer-perf-test:
     command: opt/kafka/bin/bin-wrapper.bash
     plugs:
