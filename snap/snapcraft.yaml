@@ -26,6 +26,11 @@ slots:
     source:
       read:
         - $SNAP_COMMON/var/log/kafka
+  kafka-connect-logs:
+    interface: content
+    source:
+      read:
+        - $SNAP_COMMON/var/log/kafka-connect
   cc-logs:
     interface: content
     source:
@@ -43,6 +48,16 @@ apps:
       - network
       - network-bind
       - removable-media
+      - mount-observe
+  connect:
+    command: opt/kafka-connect/bin/start-wrapper.bash
+    daemon: simple
+    install-mode: disable
+    environment:
+      LOG_DIR: $SNAP_COMMON/var/log/kafka-connect
+    plugs:
+      - network
+      - network-bind
       - mount-observe
   cruise-control:
     command:  opt/cruise-control/bin/start-wrapper.bash
@@ -323,6 +338,32 @@ parts:
       done
       DEST=$SNAPCRAFT_PRIME/opt/kafka/libs
       mkdir -p $DEST && cp *.jar $DEST
+  kafka-connect-file:
+    plugin: nil
+    after: [kafka]
+    override-prime: |
+      mkdir -p $CRAFT_PRIME/opt/kafka-connect/kafka-connect-file/config
+      mkdir -p $CRAFT_PRIME/opt/kafka-connect/kafka-connect-file/libs
+
+      cp $CRAFT_STAGE/opt/kafka/config/connect-file* $CRAFT_PRIME/opt/kafka-connect/kafka-connect-file/config
+      cp $CRAFT_STAGE/opt/kafka/libs/connect-file* $CRAFT_PRIME/opt/kafka-connect/kafka-connect-file/libs
+  kafka-connect-jdbc:
+    plugin: nil
+    source: https://github.com/Aiven-Open/jdbc-connector-for-apache-kafka.git
+    source-tag: v6.9.0
+    after: [kafka]
+    build-packages:
+    - openjdk-11-jdk
+    override-build: |
+      ./gradlew distTar && \
+      mkdir -p $CRAFT_PART_INSTALL/opt/kafka-connect-jdbc && \
+      tar -xf ./build/distributions/jdbc-connector-for-apache-kafka-*.tar -C $CRAFT_PART_INSTALL/opt/kafka-connect-jdbc --strip-components 1
+    override-prime: |
+      mkdir -p $CRAFT_PRIME/etc/kafka-connect
+      mkdir -p $CRAFT_PRIME/opt/kafka-connect/kafka-connect-jdbc/libs
+
+      mv $CRAFT_STAGE/opt/kafka-connect-jdbc/*.jar $CRAFT_PRIME/opt/kafka-connect/kafka-connect-jdbc/libs
+      cp -r $CRAFT_STAGE/opt/kafka-connect-jdbc/* $CRAFT_PRIME/opt/kafka-connect/kafka-connect-jdbc
   wrapper:
     plugin: dump
     source: snap/local
