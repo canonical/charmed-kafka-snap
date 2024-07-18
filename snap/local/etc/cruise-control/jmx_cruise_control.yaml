@@ -1,0 +1,5 @@
+  lowercaseOutputName: true
+  rules:
+  - pattern: kafka.cruisecontrol<name=(.+)><>(\w+)
+    name: kafka_cruisecontrol_$1_$2
+    type: GAUGE
