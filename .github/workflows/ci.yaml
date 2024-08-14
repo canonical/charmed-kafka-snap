@@ -89,7 +89,7 @@ jobs:
           curl -s http://localhost:9090/kafkacruisecontrol/state | grep "state: RUNNING"
 
   test-with-kraft:
-    name: Test Snap with Kraft
+    name: Test Snap in Kraft mode
     runs-on: ubuntu-latest
     needs:
       - build
@@ -106,14 +106,20 @@ jobs:
 
       - name: Set default kraft config
         run: |
-          sudo cp /snap/charmed-kafka/current/opt/kafka/config/kraft/server.properties /var/snap/charmed-kafka/current/etc/kafka
+          sudo cp /snap/charmed-kafka/current/opt/kafka/config/kraft/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          sudo cp /snap/charmed-kafka/current/opt/kafka/config/kraft/controller.properties /var/snap/charmed-kafka/current/etc/kraft/controller.properties
 
           sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kraft' /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+
           uuid=$(sudo charmed-kafka.storage random-uuid)
           sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kraft/controller.properties
 
       - name: Start snap services
         run: |
+          sudo snap start charmed-kafka.controller
+          sleep 5
           sudo snap start charmed-kafka.daemon
           sleep 5
 

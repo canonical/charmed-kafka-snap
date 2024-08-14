@@ -26,6 +26,11 @@ slots:
     source:
       read:
         - $SNAP_COMMON/var/log/kafka
+  kraft-logs:
+    interface: content
+    source:
+      read:
+        - $SNAP_COMMON/var/log/kraft
   cc-logs:
     interface: content
     source:
@@ -39,6 +44,17 @@ apps:
     install-mode: disable
     environment:
       LOG_DIR: $SNAP_COMMON/var/log/kafka
+    plugs:
+      - network
+      - network-bind
+      - removable-media
+      - mount-observe
+  controller:
+    command: opt/kraft/bin/start-wrapper.bash
+    daemon: simple
+    install-mode: disable
+    environment:
+      LOG_DIR: $SNAP_COMMON/var/log/kraft
     plugs:
       - network
       - network-bind
