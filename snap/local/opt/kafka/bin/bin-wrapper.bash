@@ -12,4 +12,4 @@ fi
     --clear-groups \
     --reuid snap_daemon \
     --regid snap_daemon -- \
-    "${SNAP}/opt/kafka/bin/${bin_script}" "${@}"
+    ${SNAP}/opt/kafka/bin/${bin_script} "${@}"
