@@ -113,8 +113,8 @@ jobs:
           sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kraft' /var/snap/charmed-kafka/current/etc/kraft/controller.properties
 
           uuid=$(sudo charmed-kafka.storage random-uuid)
-          sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
-          sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+          charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kraft/controller.properties
 
       - name: Start snap services
         run: |
