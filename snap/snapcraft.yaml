@@ -259,7 +259,57 @@ apps:
     plugs:
       - mount-observe
 
+  daemon:
+    command: opt/openmessaging/bin/benchmark
+    environment:
+      CLASSPATH: :$SNAP/opt/openmessaging/lib/*
+    plugs:
+      - network
+      - network-bind
+      - mount-observe
+
 parts:
+  openmessaging:
+#    plugin: maven
+#    source: https://github.com/openmessaging/benchmark.git
+#    # source-tag: TOMCAT_9_0_5
+#    source-branch: master
+#    source-type: git
+#    maven-parameters:
+#      [-DskipTests, -Djacoco.skip, -Dcheckstyle.skip, -Dspotless.check.skip]
+    plugin: nil
+    source: https://github.com/openmessaging/benchmark.git
+    source-branch: master
+    build-packages:
+    - openjdk-17-jdk
+    override-build: |
+      curl -o apache-maven-3.9.6-bin.tar.gz https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+      mkdir -p /opt
+      tar xf apache-maven-3.9.6-bin.tar.gz -C /opt
+      /opt/apache-maven-3.9.6/bin/mvn clean package -DskipTests  -Djacoco.skip -Dcheckstyle.skip  -Dspotless.check.skip # verify -DskipTests  -Djacoco.skip -Dcheckstyle.skip  -Dspotless.check.skip
+      cp -r ./package/target/openmessaging-benchmark-0.0.1-SNAPSHOT-bin.tar.gz $CRAFT_PART_INSTALL
+    stage:
+    - openmessaging-benchmark-0.0.1-SNAPSHOT-bin.tar.gz
+    override-prime: |
+      mkdir -p $CRAFT_STAGE/openmessaging
+      mkdir -p $CRAFT_PRIME/opt/openmessaging
+      tar xf $CRAFT_STAGE/openmessaging-benchmark-0.0.1-SNAPSHOT-bin.tar.gz -C $CRAFT_STAGE/
+      cp -r $CRAFT_STAGE/openmessaging-benchmark-0.0.1-SNAPSHOT/* $CRAFT_PRIME/opt/openmessaging
+      # cp -r $CRAFT_STAGE/benchmark-framework/* $CRAFT_PRIME/opt/openmessaging
+
+      cat<<EOF >$CRAFT_PRIME/opt/openmessaging/bin/benchmark
+      #!/bin/bash
+      if [ -z "\$HEAP_OPTS" ]
+      then
+          HEAP_OPTS="-Xms4G -Xmx4G"
+      fi
+
+      JVM_MEM="\${HEAP_OPTS} -XX:+UseG1GC"
+      JVM_GC_LOG=" -XX:+PrintGCDetails -XX:+PrintGCApplicationStoppedTime  -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=5 -XX:GCLogFileSize=64m  -Xloggc:/dev/shm/benchmark-client-gc_%p.log"
+      java -server -cp \$CLASSPATH \$JVM_MEM io.openmessaging.benchmark.Benchmark "\$@"
+      EOF
+      chmod +x $CRAFT_PRIME/opt/openmessaging/bin/benchmark
+
   cruise-control:
     plugin: nil
     source: https://github.com/linkedin/cruise-control.git
