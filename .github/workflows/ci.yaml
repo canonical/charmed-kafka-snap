@@ -62,7 +62,7 @@ jobs:
         run: |
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/server.properties /var/snap/charmed-kafka/current/etc/kafka
           sudo cp /snap/charmed-zookeeper/current/opt/zookeeper/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
-          sudo cp /snap/charmed-kafka/current/opt/kafka/config/connect-distributed.properties /var/snap/charmed-kafka/current/etc/kafka
+          sudo cp /snap/charmed-kafka/current/opt/kafka/config/connect-distributed.properties /var/snap/charmed-kafka/current/etc/connect
 
           sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/cruisecontrol.properties /var/snap/charmed-kafka/current/etc/cruise-control
           sudo sed -i -e 's/sample.store.topic.replication.factor=2/sample.store.topic.replication.factor=1/g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
@@ -120,7 +120,7 @@ jobs:
         run: |
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/kraft/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/kraft/controller.properties /var/snap/charmed-kafka/current/etc/kraft/controller.properties
-          sudo cp /snap/charmed-kafka/current/opt/kafka/config/connect-distributed.properties /var/snap/charmed-kafka/current/etc/kafka
+          sudo cp /snap/charmed-kafka/current/opt/kafka/config/connect-distributed.properties /var/snap/charmed-kafka/current/etc/connect
 
           sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
           sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kraft' /var/snap/charmed-kafka/current/etc/kraft/controller.properties

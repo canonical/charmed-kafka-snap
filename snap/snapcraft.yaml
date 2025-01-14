@@ -263,7 +263,7 @@ apps:
     environment:
       bin_script: kafka-metadata-quorum.sh
   connect-distributed:
-    command: opt/kafka/bin/connect-wrapper.bash
+    command: opt/connect/bin/connect-wrapper.bash
     plugs:
       - network
       - network-bind
