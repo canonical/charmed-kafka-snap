@@ -262,6 +262,14 @@ apps:
       - mount-observe
     environment:
       bin_script: kafka-metadata-quorum.sh
+  connect-distributed:
+    command: opt/kafka/bin/bin-wrapper.bash
+    plugs:
+      - network
+      - network-bind
+      - mount-observe
+    environment:
+      bin_script: connect-distributed.sh
   keytool:
     command: usr/lib/jvm/java-18-openjdk-amd64/bin/keytool
     plugs:
