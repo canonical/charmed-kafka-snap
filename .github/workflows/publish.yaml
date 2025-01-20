@@ -48,7 +48,7 @@ jobs:
         with:
           name: ${{ needs.build.outputs.artifact-name }}
       - id: get-snap-name
-        run: echo "SNAP_FILE=$(ls *.snap)" >> $GITHUB_OUTPUT
+        run: echo "SNAP_FILE=$(ls packed-snap-architecture-amd64/*.snap)" >> $GITHUB_OUTPUT
       - name: Publish snap
         id: publish
         uses: snapcore/action-publish@v1
@@ -56,7 +56,7 @@ jobs:
           SNAPCRAFT_STORE_CREDENTIALS: ${{ secrets.STORE_LOGIN }}
         with:
           snap: ${{ steps.get-snap-name.outputs.SNAP_FILE }}
-          release: ${{ github.ref_name }}
+          release: 3/edge
       - name: Upload snapcraft logs
         if: ${{ failure() && steps.publish.outcome == 'failure' }}
         uses: actions/upload-artifact@v4
