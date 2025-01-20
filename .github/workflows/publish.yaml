@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - id: get-current-version
         name: Retrieve Metadata
@@ -35,7 +35,7 @@ jobs:
   build:
     name: Build snap
     needs: checks
-    uses: canonical/data-platform-workflows/.github/workflows/build_snap_without_cache.yaml@v24.0.6
+    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v24.0.6
 
   publish:
     name: Publish Snap
@@ -43,8 +43,8 @@ jobs:
     needs: build
     timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           name: ${{ needs.build.outputs.artifact-name }}
       - id: get-snap-name
@@ -59,7 +59,7 @@ jobs:
           release: ${{ github.ref_name }}
       - name: Upload snapcraft logs
         if: ${{ failure() && steps.publish.outcome == 'failure' }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: snapcraft-release-logs
           path: ~/.local/state/snapcraft/log/
