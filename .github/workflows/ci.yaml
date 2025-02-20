@@ -79,7 +79,7 @@ jobs:
       - name: Check topic creation
         run: |
           topic_creation=$(charmed-kafka.topics --create --topic __CruiseControlMetrics --bootstrap-server localhost:9092)
-          if [ "$topic_creation" != "Created topic __CruiseControlMetrics." ]; then
+          if [ "$topic_creation" != *"Created topic __CruiseControlMetrics."* ]; then
               echo $topic_creation
               exit 1
           fi
