@@ -83,6 +83,13 @@ jobs:
               exit 1
           fi
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
+      - name: Sleep
+        run: |
+          sleep 10000
+
       - name: Check CruiseControl state
         run: |
           sudo snap start charmed-kafka.cruise-control
