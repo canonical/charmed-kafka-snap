@@ -23,21 +23,25 @@ environment:
 slots:
   kafka-logs:
     interface: content
+    content: logs
     source:
       read:
         - $SNAP_COMMON/var/log/kafka
   kraft-logs:
     interface: content
+    content: logs
     source:
       read:
         - $SNAP_COMMON/var/log/kraft
   cc-logs:
     interface: content
+    content: logs
     source:
       read:
         - $SNAP_COMMON/var/log/cruise-control
   connect-logs:
     interface: content
+    content: logs
     source:
       read:
         - $SNAP_COMMON/var/log/connect
