@@ -75,9 +75,9 @@ jobs:
       - name: Start snap services
         run: |
           sudo snap start charmed-kafka.controller
-          sleep 5
+          sleep 10
           sudo snap start charmed-kafka.daemon
-          sleep 5
+          sleep 10
 
       - name: Check topic creation
         run: |
