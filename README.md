@@ -12,18 +12,27 @@ To build locally, use `snapcraft --debug`
 Install the snap (e.g. `sudo snap install ./charmed-kafka_3.6.0_amd64.snap --dangerous --devmode`
 ).
 
-To run the snap, you will require a running Apache ZooKeeper service. You can use the following:
+To run the snap, you will require to set up a controller service and the Kafka service. You can use the following:
 
 ```bash
-# installing zookeeper
-sudo snap install charmed-zookeeper --channel 3/edge
-
 # copying default config
-sudo cp /snap/charmed-kafka/current/opt/kafka/config/server.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
-sudo cp /snap/charmed-zookeeper/current/opt/zookeeper/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
+sudo cp /snap/charmed-kafka/current/opt/kafka/config/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
+sudo cp /snap/charmed-kafka/current/opt/kafka/config/controller.properties /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+
+# setting up logging directories
+sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
+sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kraft' /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+
+# Creating cluster uuid and formatting controller and broker storage
+uuid=$(sudo charmed-kafka.storage random-uuid)
+sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
+sudo charmed-kafka.storage format --standalone --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+
+# snap runs as _daemon_ user, we make sure that the controller directory is owned by that user
+sudo chown -R _daemon_:_daemon_ /var/snap/charmed-kafka/common/var/log/kraft
 
 # starting services
-sudo snap start charmed-zookeeper.daemon
+sudo snap start charmed-kafka.controller
 sleep 5
 sudo snap start charmed-kafka.daemon
 ```
@@ -54,7 +63,7 @@ If you want to use custom log4j properties, place your custom log4j properties f
 
 ### Cruise Control
 
-To get started with Cruise Control, on a local system already running the Kafka and ZooKeeper services, you can use the following:
+To get started with Cruise Control, on a local system already running the Kafka service, you can use the following:
 
 ```bash
 # copying necessary configuration files

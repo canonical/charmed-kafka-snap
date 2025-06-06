@@ -178,14 +178,6 @@ apps:
       - mount-observe
     environment:
       bin_script: kafka-replica-verification.sh
-  zookeeper-shell:
-    command: opt/kafka/bin/bin-wrapper.bash
-    plugs:
-      - network
-      - network-bind
-      - mount-observe
-    environment:
-      bin_script: zookeeper-shell.sh
   run-class:
     command: opt/kafka/bin/bin-wrapper.bash
     plugs:
