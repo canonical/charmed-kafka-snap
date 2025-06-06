@@ -16,6 +16,6 @@ fi
 
 "${SNAP}"/usr/bin/setpriv \
     --clear-groups \
-    --reuid snap_daemon \
-    --regid snap_daemon -- \
+    --reuid _daemon_ \
+    --regid _daemon_ -- \
     "${SNAP}/opt/kafka/bin/kafka-server-start.sh" "${SNAP_DATA}"/etc/kraft/controller.properties

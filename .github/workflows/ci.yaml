@@ -131,7 +131,7 @@ jobs:
           sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
           sudo charmed-kafka.storage format --standalone --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kraft/controller.properties
 
-          sudo chown -R snap_daemon:snap_daemon /var/snap/charmed-kafka/common/var/log/kraft
+          sudo chown -R _daemon_:_daemon_ /var/snap/charmed-kafka/common/var/log/kraft
 
       - name: Start snap services
         run: |
