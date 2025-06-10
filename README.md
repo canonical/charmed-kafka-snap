@@ -12,7 +12,7 @@ To build locally, use `snapcraft --debug`
 Install the snap (e.g. `sudo snap install ./charmed-kafka_3.6.0_amd64.snap --dangerous --devmode`
 ).
 
-To run the snap, you will require to set up a controller service and the Kafka service. You can use the following:
+To run the snap, you will require to set up a KRaft controller service and the Kafka broker service. You can use the following:
 
 ```bash
 # copying default config

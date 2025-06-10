@@ -41,8 +41,8 @@ jobs:
       snap-file: ${{ steps.snapcraft.outputs.snap }}
       version: ${{ steps.get-version.outputs.version }}
 
-  test-with-kraft:
-    name: Test Snap in Kraft mode
+  test:
+    name: Test Snap
     runs-on: ubuntu-latest
     needs:
       - build
@@ -62,9 +62,14 @@ jobs:
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/controller.properties /var/snap/charmed-kafka/current/etc/kraft/controller.properties
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/connect-distributed.properties /var/snap/charmed-kafka/current/etc/connect
+          sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/cruisecontrol.properties /var/snap/charmed-kafka/current/etc/cruise-control
 
           sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
           sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kraft' /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+          sudo sed -i -e 's/sample.store.topic.replication.factor=2/sample.store.topic.replication.factor=1/g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+          sudo sed -i -e 's|capacity.config.file=config/capacityJBOD.json|capacity.config.file=/var/snap/charmed-kafka/current/etc/cruise-control/capacityJBOD.json|g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+
+          sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/capacityJBOD.json /var/snap/charmed-kafka/current/etc/cruise-control
 
           uuid=$(sudo charmed-kafka.storage random-uuid)
           sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
@@ -81,13 +86,13 @@ jobs:
 
       - name: Check topic creation
         run: |
-          topic_creation=$(charmed-kafka.topics --create --topic test --bootstrap-server localhost:9092)
+          topic_creation=$(charmed-kafka.topics --create --topic __CruiseControlMetrics --bootstrap-server localhost:9092)
           echo $topic_creation
-          if [ "$topic_creation" != *"Created topic test."* ]; then
+          if [[ "$topic_creation" != *"Created topic __CruiseControlMetrics."* ]]; then
               exit 1
           fi
 
-      - name: Test connect service
+      - name: Test Connect service
         run: |
           sudo snap start charmed-kafka.connect-distributed
           sleep 20
@@ -97,3 +102,9 @@ jobs:
               exit 0
           fi
           exit 1
+
+      - name: Check CruiseControl state
+        run: |
+          sudo snap start charmed-kafka.cruise-control
+          sleep 20
+          curl -s http://localhost:9090/kafkacruisecontrol/state | grep "state: RUNNING"
