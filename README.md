@@ -12,18 +12,27 @@ To build locally, use `snapcraft --debug`
 Install the snap (e.g. `sudo snap install ./charmed-kafka_3.6.0_amd64.snap --dangerous --devmode`
 ).
 
-To run the snap, you will require a running Apache ZooKeeper service. You can use the following:
+To run the snap, you will require to set up a KRaft controller service and the Kafka broker service. You can use the following:
 
 ```bash
-# installing zookeeper
-sudo snap install charmed-zookeeper --channel 3/edge
-
 # copying default config
-sudo cp /snap/charmed-kafka/current/opt/kafka/config/server.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
-sudo cp /snap/charmed-zookeeper/current/opt/zookeeper/conf/zoo_sample.cfg /var/snap/charmed-zookeeper/current/etc/zookeeper/zoo.cfg
+sudo cp /snap/charmed-kafka/current/opt/kafka/config/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
+sudo cp /snap/charmed-kafka/current/opt/kafka/config/controller.properties /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+
+# setting up logging directories
+sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
+sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kraft' /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+
+# Creating cluster uuid and formatting controller and broker storage
+uuid=$(sudo charmed-kafka.storage random-uuid)
+sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
+sudo charmed-kafka.storage format --standalone --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+
+# snap runs as _daemon_ user, we make sure that the controller directory is owned by that user
+sudo chown -R _daemon_:_daemon_ /var/snap/charmed-kafka/common/var/log/kraft
 
 # starting services
-sudo snap start charmed-zookeeper.daemon
+sudo snap start charmed-kafka.controller
 sleep 5
 sudo snap start charmed-kafka.daemon
 ```
@@ -54,16 +63,20 @@ If you want to use custom log4j properties, place your custom log4j properties f
 
 ### Cruise Control
 
-To get started with Cruise Control, on a local system already running the Kafka and ZooKeeper services, you can use the following:
+To get started with Cruise Control, on a local system already running the Kafka service, you can use the following:
 
 ```bash
 # copying necessary configuration files
 sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/cruisecontrol.properties /var/snap/charmed-kafka/current/etc/cruise-control
 sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/capacityJBOD.json /var/snap/charmed-kafka/current/etc/cruise-control
 
-# overriding defaults
+# overriding defaults and set up to use KRaft mode
 sudo sed -i -e 's/sample.store.topic.replication.factor=2/sample.store.topic.replication.factor=1/g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
 sudo sed -i -e 's|capacity.config.file=config/capacityJBOD.json|capacity.config.file=/var/snap/charmed-kafka/current/etc/cruise-control/capacityJBOD.json|g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+
+sudo sed -i -e '/zookeeper.connect=localhost:2181\//c\# zookeeper.connect=localhost:2181/' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+sudo sed -i -e '/zookeeper.security.enabled=false/c\# zookeeper.security.enabled=false' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+sudo sed -i -e '/# zookeeper.security.enabled=false/a\kafka.broker.failure.detection.enable=true\n' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
 
 # starting services
 sudo snap start charmed-kafka.cruise-control

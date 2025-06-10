@@ -1,12 +1,8 @@
 #!/usr/bin/env bash
 # Installation hook for charmed-kafka snap.
 #
-# Note: '584788' refers to the snap_daemon user and group within a snap,
+# Note: '584792' refers to the _daemon_ user and group within a snap,
 # exposed as user ID (UID) and group ID (GID).
-#
-# FIXME (24.04): From snapd 2.61 onwards, snap_daemon is being deprecated and
-# replaced with _daemon_ (with underscores), which now possesses a UID of 584792.
-# See https://snapcraft.io/docs/system-usernames.
 
 set -eux
 
@@ -23,12 +19,12 @@ do
     # setting dir permissions given re-attached storage
     if [stat -c '%u' "$DATA" == 0 -o ! -d "$DATA"]; then
         chmod -R 770 "${SNAP_COMMON}"
-        chown -R 584788:root "${SNAP_COMMON}"
+        chown -R 584792:root "${SNAP_COMMON}"
         chmod 750 "${DATA}"
-        chown 584788:root "${DATA}"
+        chown 584792:root "${DATA}"
     else
         chmod -R 770 "${LOGS}"
-        chown -R 584788:root "${LOGS}"
+        chown -R 584792:root "${LOGS}"
     fi
 
     # copying default config from squashfs
@@ -37,4 +33,4 @@ done
 
 # setting blanket permissions for the installing snap data dir
 chmod -R 770 "${SNAP_DATA}"/*
-chown -R 584788:root "${SNAP_DATA}"/*
+chown -R 584792:root "${SNAP_DATA}"/*
