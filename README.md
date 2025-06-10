@@ -70,9 +70,13 @@ To get started with Cruise Control, on a local system already running the Kafka 
 sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/cruisecontrol.properties /var/snap/charmed-kafka/current/etc/cruise-control
 sudo cp /snap/charmed-kafka/current/opt/cruise-control/config/capacityJBOD.json /var/snap/charmed-kafka/current/etc/cruise-control
 
-# overriding defaults
+# overriding defaults and set up to use KRaft mode
 sudo sed -i -e 's/sample.store.topic.replication.factor=2/sample.store.topic.replication.factor=1/g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
 sudo sed -i -e 's|capacity.config.file=config/capacityJBOD.json|capacity.config.file=/var/snap/charmed-kafka/current/etc/cruise-control/capacityJBOD.json|g' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+
+sudo sed -i -e '/zookeeper.connect=localhost:2181\//c\# zookeeper.connect=localhost:2181/' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+sudo sed -i -e '/zookeeper.security.enabled=false/c\# zookeeper.security.enabled=false' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
+sudo sed -i -e '/# zookeeper.security.enabled=false/a\kafka.broker.failure.detection.enable=true\n' /var/snap/charmed-kafka/current/etc/cruise-control/cruisecontrol.properties
 
 # starting services
 sudo snap start charmed-kafka.cruise-control
