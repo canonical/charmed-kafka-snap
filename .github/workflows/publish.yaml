@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - '3/[a-z]+'
+      - '4/[a-z]+'
   workflow_call:
   workflow_dispatch:
 
@@ -20,11 +21,11 @@ jobs:
         run: |
           VERSION=$(yq '(.version|split("-"))[0]' snap/snapcraft.yaml)
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          
+
           BRANCH=${GITHUB_HEAD_REF:-${GITHUB_REF#refs/heads/}}
           echo "branch=${BRANCH}" >> $GITHUB_OUTPUT
           echo "risk=${BRANCH##*\/}" >> $GITHUB_OUTPUT
-          echo "track=${BRANCH%*\/*}" >> $GITHUB_OUTPUT    
+          echo "track=${BRANCH%*\/*}" >> $GITHUB_OUTPUT
 
       - name: Check consistency between metadata and release branch
         run: |
