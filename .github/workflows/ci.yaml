@@ -95,6 +95,9 @@ jobs:
               exit 1
           fi
 
+      - name: Setup upterm session
+        uses: lhotari/action-upterm@v1
+
       - name: Test Connect service
         run: |
           sudo snap start charmed-kafka.connect-distributed
