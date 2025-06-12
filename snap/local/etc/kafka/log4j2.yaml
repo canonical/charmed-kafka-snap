@@ -1,0 +1,164 @@
+Configuration:
+  status: error
+  name: KafkaLogConfig
+  properties:
+    property:
+      - name: charmed.kafka.log.level
+        value: INFO
+      - name: charmed.kafka.log.maxfilesize
+        value: 100MB
+      - name: charmed.kafka.log.retention
+        value: 10
+      - name: kafka.logs.dir
+        value: ${env:LOG_DIR:-/var/log/kafka}
+
+  appenders:
+    Console:
+      name: STDOUT
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "[%d] %p %m (%c)%n"
+
+    RollingFile:
+      - name: kafkaAppender
+        fileName: ${kafka.logs.dir}/server.log
+        filePattern: ${kafka.logs.dir}/server.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+      - name: stateChangeAppender
+        fileName: ${kafka.logs.dir}/state-change.log
+        filePattern: ${kafka.logs.dir}/state-change.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+      - name: requestAppender
+        fileName: ${kafka.logs.dir}/kafka-request.log
+        filePattern: ${kafka.logs.dir}/kafka-request.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+      - name: cleanerAppender
+        fileName: ${kafka.logs.dir}/log-cleaner.log
+        filePattern: ${kafka.logs.dir}/log-cleaner.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+      - name: controllerAppender
+        fileName: ${kafka.logs.dir}/controller.log
+        filePattern: ${kafka.logs.dir}/controller.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+      - name: authorizerAppender
+        fileName: ${kafka.logs.dir}/kafka-authorizer.log
+        filePattern: ${kafka.logs.dir}/kafka-authorizer.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+  Loggers:
+
+    Root:
+      level: ${sys:charmed.kafka.log.level}
+      AppenderRef:
+        - ref: kafkaAppender
+        - ref: STDOUT
+
+    Logger:
+      - name: kafka
+        level: ${sys:charmed.kafka.log.level}
+        additivity: true
+
+      - name: org.apache.kafka
+        level: ${sys:charmed.kafka.log.level}
+        additivity: true
+
+      - name: kafka.request.logger
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: requestAppender
+
+      # Uncomment the lines below and change log4j.logger.kafka.network.RequestChannel$ to TRACE
+      # for additional output related to the handling of requests
+#      - name: kafka.network.Processor
+#        level: TRACE
+#        additivity: false
+#        AppenderRef:
+#          ref: RequestAppender
+#      - name: kafka.server.KafkaApis
+#        level: TRACE
+#        additivity: false
+#        AppenderRef:
+#          ref: RequestAppender
+      - name: kafka.network.RequestChannel$
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          ref: RequestAppender
+
+      - name: org.apache.kafka.controller
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: controllerAppender
+  
+      # LogCleaner logger
+      - name: org.apache.kafka.storage.internals.log.LogCleaner
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          ref: CleanerAppender
+      - name: org.apache.kafka.storage.internals.log.LogCleaner$CleanerThread
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          ref: CleanerAppender
+      - name: org.apache.kafka.storage.internals.log.Cleaner
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          ref: CleanerAppender
+
+      - name: state.change.logger
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: stateChangeAppender
+
+      - name: kafka.authorizer.logger
+        level: ${sys:charmed.kafka.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: authorizerAppender
+

@@ -10,8 +10,10 @@ else
     unset KAFKA_JMX_OPTS
 fi
 
+export LOG_DIR="${SNAP_COMMON}/var/log/kraft"
+
 if [ "x$KAFKA_LOG4J_OPTS" = "x" ]; then
-    export KAFKA_LOG4J_OPTS="-Dcontroller.logs.dir=${LOG_DIR} -Dlog4j.configuration=file:${SNAP_DATA}/etc/kraft/log4j.properties -Dcharmed.kafka.log.level=${KAFKA_CFG_LOGLEVEL:-INFO}"
+    export KAFKA_LOG4J_OPTS="-Dlog4j2.configurationFile=${SNAP_DATA}/etc/kraft/log4j2.yaml -Dcharmed.kafka.log.level=${KAFKA_CFG_LOGLEVEL:-INFO}"
 fi
 
 "${SNAP}"/usr/bin/setpriv \
