@@ -155,10 +155,8 @@ jobs:
             --from-beginning \
             --max-messages 3
 
-          sudo ls -lh /var/snap/charmed-kafka/common/var/log/kraft
-          sudo ls -lh /var/snap/charmed-kafka/common/var/log/kafka
-
           echo "Asserting Broker Logs:"
+          sudo ls -lh /var/snap/charmed-kafka/common/var/log/kafka/*.log
           for filename in server.log kafka-authorizer.log kafka-request.log state-change.log; do
             if sudo test -s "/var/snap/charmed-kafka/common/var/log/kafka/$filename"; then
               echo "$filename exists and is not empty" 
@@ -169,8 +167,20 @@ jobs:
           done
 
           echo "Asserting Controller Logs:"
+          sudo ls -lh /var/snap/charmed-kafka/common/var/log/kraft/*.log
           for filename in server.log controller.log kafka-request.log; do
             if sudo test -s "/var/snap/charmed-kafka/common/var/log/kraft/$filename"; then
+              echo "$filename exists and is not empty" 
+            else
+              echo "$filename is empty!"
+              exit 1
+            fi
+          done
+
+          echo "Asserting Connect Logs:"
+          sudo ls -lh /var/snap/charmed-kafka/common/var/log/connect/*.log
+          for filename in connect.log; do
+            if sudo test -s "/var/snap/charmed-kafka/common/var/log/connect/$filename"; then
               echo "$filename exists and is not empty" 
             else
               echo "$filename is empty!"
