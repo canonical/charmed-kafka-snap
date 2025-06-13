@@ -1,0 +1,80 @@
+Configuration:
+  status: error
+  name: CruiseControlLogging
+  properties:
+    property:
+      - name: cruisecontrol.log.level
+        value: INFO
+      - name: filename
+        value: ${sys:cruisecontrol.logs.dir}
+      - name: charmed.kafka.log.maxfilesize
+        value: 100MB
+      - name: charmed.kafka.log.retention
+        value: 10
+
+  appenders:
+    RollingFile:
+      - name: kafkaCruiseControlFile
+        fileName: ${filename}/kafkacruisecontrol.log
+        filePattern: ${filename}/kafkacruisecontrol.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+      - name: operationFile
+        fileName: ${filename}/kafkacruisecontrol-operation.log
+        filePattern: ${filename}/kafkacruisecontrol-operation.log.%i
+        PatternLayout:
+          pattern: "[%d] %p [%c] %m %n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+
+      - name: requestFile
+        fileName: ${filename}/kafkacruisecontrol-request.log
+        filePattern: ${filename}/kafkacruisecontrol-request.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+  Loggers:
+    Logger:
+      - name: com.linkedin.kafka.cruisecontrol
+        level: ${sys:cruisecontrol.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: kafkaCruiseControlFile
+
+      - name: com.linkedin.kafka.cruisecontrol.detector
+        level: ${sys:cruisecontrol.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: kafkaCruiseControlFile
+
+      - name: operationLogger
+        level: ${sys:cruisecontrol.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: operationFile
+
+      - name: CruiseControlPublicAccessLogger
+        level: ${sys:cruisecontrol.log.level}
+        additivity: false
+        AppenderRef:
+          - ref: requestFile
+
+  Root:
+    level: ${sys:cruisecontrol.log.level}
+    AppenderRef:
+      - ref: kafkaCruiseControlFile
