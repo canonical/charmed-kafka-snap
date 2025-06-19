@@ -89,11 +89,12 @@ jobs:
 
       - name: Check topic creation
         run: |
-          topic_creation=$(charmed-kafka.topics --create --topic __CruiseControlMetrics --bootstrap-server localhost:9092)
+          topic_creation=$(sudo charmed-kafka.topics --create --topic __CruiseControlMetrics --bootstrap-server localhost:9092)
           echo $topic_creation
-          if [[ "$topic_creation" != *"Created topic __CruiseControlMetrics."* ]]; then
-              exit 1
+          if [[ "$topic_creation" == *"Created topic __CruiseControlMetrics."* ]]; then
+              exit 0
           fi
+          exit 1
 
       - name: Test Connect service
         run: |
@@ -111,3 +112,89 @@ jobs:
           sudo snap start charmed-kafka.cruise-control
           sleep 20
           curl -s http://localhost:9090/kafkacruisecontrol/state | grep "state: RUNNING"
+
+      - id: checkout
+        name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check logging
+        run: |
+          sudo cp ./tests/config/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          sudo cp ./tests/config/client.properties /var/snap/charmed-kafka/current/etc/kafka/
+          sudo cp ./tests/config/admin-client.properties /var/snap/charmed-kafka/current/etc/kafka/
+
+          # Change logging level to DEBUG
+          echo "KAFKA_CFG_LOGLEVEL=DEBUG" | sudo tee -a /etc/environment
+
+          # reset services
+          sudo snap restart charmed-kafka.controller
+          sudo snap restart charmed-kafka.daemon
+
+          # For state change loggers, create a test topic and produce some messages
+          sudo charmed-kafka.topics \
+            --bootstrap-server localhost:9092 \
+            --command-config /var/snap/charmed-kafka/current/etc/kafka/admin-client.properties \
+            --create --topic test
+          
+          i=1
+          while [ $i -le 5 ]
+          do
+            echo "MESSAGE $i" | \
+              sudo charmed-kafka.console-producer \
+              --bootstrap-server localhost:9092 \
+              --producer.config /var/snap/charmed-kafka/current/etc/kafka/admin-client.properties \
+              --topic test
+            i=$((i+1))
+          done
+
+          # For authorizer logger, try to consume with non-authorized user
+          sudo charmed-kafka.console-consumer \
+            --bootstrap-server localhost:9092 \
+            --consumer.config /var/snap/charmed-kafka/current/etc/kafka/client.properties \
+            --topic test \
+            --from-beginning \
+            --max-messages 3
+
+          echo "Asserting Broker Logs:"
+          sudo ls -lh /var/snap/charmed-kafka/common/var/log/kafka/ | grep .log
+          for filename in server.log kafka-authorizer.log kafka-request.log state-change.log; do
+            if sudo test -s "/var/snap/charmed-kafka/common/var/log/kafka/$filename"; then
+              echo "$filename exists and is not empty" 
+            else
+              echo "$filename is empty!"
+              exit 1
+            fi
+          done
+
+          echo "Asserting Controller Logs:"
+          sudo ls -lh /var/snap/charmed-kafka/common/var/log/kraft/ | grep .log
+          for filename in server.log controller.log kafka-request.log; do
+            if sudo test -s "/var/snap/charmed-kafka/common/var/log/kraft/$filename"; then
+              echo "$filename exists and is not empty" 
+            else
+              echo "$filename is empty!"
+              exit 1
+            fi
+          done
+
+          echo "Asserting Connect Logs:"
+          sudo ls -lh /var/snap/charmed-kafka/common/var/log/connect/ | grep .log
+          for filename in connect.log; do
+            if sudo test -s "/var/snap/charmed-kafka/common/var/log/connect/$filename"; then
+              echo "$filename exists and is not empty" 
+            else
+              echo "$filename is empty!"
+              exit 1
+            fi
+          done
+
+          echo "Asserting CruiseControl Logs:"
+          sudo ls -lh /var/snap/charmed-kafka/common/var/log/cruise-control/ | grep .log
+          for filename in kafkacruisecontrol-operation.log kafkacruisecontrol-request.log kafkacruisecontrol.log; do
+            if sudo test -s "/var/snap/charmed-kafka/common/var/log/cruise-control/$filename"; then
+              echo "$filename exists and is not empty" 
+            else
+              echo "$filename is empty!"
+              exit 1
+            fi
+          done

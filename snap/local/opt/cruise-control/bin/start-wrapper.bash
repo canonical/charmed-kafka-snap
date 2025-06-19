@@ -11,7 +11,7 @@ else
 fi
 
 if [ "x$KAFKA_LOG4J_OPTS" = "x" ]; then
-    export KAFKA_LOG4J_OPTS="-Dcruisecontrol.logs.dir=${LOG_DIR} -Dlog4j.configurationFile=${SNAP_DATA}/etc/cruise-control/log4j.properties -Dcruisecontrol.log.level=${KAFKA_CFG_LOGLEVEL:-INFO}"
+    export KAFKA_LOG4J_OPTS="-Dcruisecontrol.logs.dir=${LOG_DIR} -Dlog4j2.configurationFile=${SNAP_DATA}/etc/cruise-control/log4j2.yaml -Dcruisecontrol.log.level=${KAFKA_CFG_LOGLEVEL:-INFO}"
 fi
 
 "${SNAP}"/usr/bin/setpriv \

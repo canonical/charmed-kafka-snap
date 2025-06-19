@@ -1,0 +1,40 @@
+Configuration:
+  status: error
+  name: KafkaConnectLogConfig
+  properties:
+    property:
+      - name: charmed.kafka.log.level
+        value: INFO
+      - name: charmed.kafka.log.maxfilesize
+        value: 100MB
+      - name: charmed.kafka.log.retention
+        value: 10
+      - name: kafka.logs.dir
+        value: ${env:LOG_DIR:-/var/log/kafka}
+
+  appenders:
+    Console:
+      name: STDOUT
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "[%d] %p %m (%c)%n"
+
+    RollingFile:
+      - name: connectAppender
+        fileName: ${kafka.logs.dir}/connect.log
+        filePattern: ${kafka.logs.dir}/connect.log.%i
+        PatternLayout:
+          pattern: "[%d] %p %m (%c)%n"
+        Policies:
+          SizeBasedTriggeringPolicy:
+            size: ${sys:charmed.kafka.log.maxfilesize}
+        DefaultRolloverStrategy:
+          max: ${sys:charmed.kafka.log.retention}
+
+  Loggers:
+
+    Root:
+      level: ${sys:charmed.kafka.log.level}
+      AppenderRef:
+        - ref: connectAppender
+        - ref: STDOUT

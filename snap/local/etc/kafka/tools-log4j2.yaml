@@ -1,0 +1,20 @@
+Configuration:
+  status: error
+  name: KafkaTools
+  properties:
+    property:
+      - name: charmed.kafka.log.level
+        value: WARN
+
+  appenders:
+    Console:
+      name: stderr
+      target: SYSTEM_ERR
+      PatternLayout:
+        pattern: "[%d] %p %m (%c)%n"
+
+  Loggers:
+    Root:
+      level: ${sys:charmed.kafka.log.level}
+      AppenderRef:
+        - ref: stderr
