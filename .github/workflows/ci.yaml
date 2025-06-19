@@ -90,10 +90,10 @@ jobs:
       - name: Check topic creation
         run: |
           topic_creation=$(sudo charmed-kafka.topics --create --topic __CruiseControlMetrics --bootstrap-server localhost:9092)
+          echo $topic_creation
           if [[ "$topic_creation" == *"Created topic __CruiseControlMetrics."* ]]; then
               exit 0
           fi
-          echo $topic_creation
           exit 1
 
       - name: Test Connect service
