@@ -119,7 +119,7 @@ jobs:
 
       - name: Check logging
         run: |
-          sudo cp ./tests/config/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          sudo cp ./tests/config/server.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
           sudo cp ./tests/config/client.properties /var/snap/charmed-kafka/current/etc/kafka/
           sudo cp ./tests/config/admin-client.properties /var/snap/charmed-kafka/current/etc/kafka/
 
