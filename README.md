@@ -12,28 +12,23 @@ To build locally, use `snapcraft --debug`
 Install the snap (e.g. `sudo snap install ./charmed-kafka_3.6.0_amd64.snap --dangerous --devmode`
 ).
 
-To run the snap, you will require to set up a KRaft controller service and the Kafka broker service. You can use the following:
+To run the snap, you will require to set up a Kafka running in KRaft mode:
 
 ```bash
 # copying default config
-sudo cp /snap/charmed-kafka/current/opt/kafka/config/broker.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
-sudo cp /snap/charmed-kafka/current/opt/kafka/config/controller.properties /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+sudo cp /snap/charmed-kafka/current/opt/kafka/config/server.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
 
 # setting up logging directories
 sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kafka' /var/snap/charmed-kafka/current/etc/kafka/server.properties
-sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/charmed-kafka/common/var/log/kraft' /var/snap/charmed-kafka/current/etc/kraft/controller.properties
 
 # Creating cluster uuid and formatting controller and broker storage
 uuid=$(sudo charmed-kafka.storage random-uuid)
-sudo charmed-kafka.storage format --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
-sudo charmed-kafka.storage format --standalone --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kraft/controller.properties
+sudo charmed-kafka.storage format --standalone --cluster-id $uuid -c /var/snap/charmed-kafka/current/etc/kafka/server.properties
 
 # snap runs as _daemon_ user, we make sure that the controller directory is owned by that user
-sudo chown -R _daemon_:_daemon_ /var/snap/charmed-kafka/common/var/log/kraft
+sudo chown -R _daemon_:_daemon_ /var/snap/charmed-kafka/common/var/log/kafka
 
 # starting services
-sudo snap start charmed-kafka.controller
-sleep 5
 sudo snap start charmed-kafka.daemon
 ```
 
