@@ -1,6 +1,6 @@
 name: charmed-kafka
 base: core24
-version: '4.0.0'
+version: '4.1.1'
 summary: Apache Kafka in a snap.
 description: |
   This is a snap that bundles Apache Kafka together with other tools of its ecosystem in order to be used in Charmed Operators, providing automated operations management from day 0 to day 2 on the Apache Kafka real-time stream processing, on top of a Virtual Machine cluster and K8s cluster. It is an open source, end-to-end, production ready data platform on top of cloud native technologies.
@@ -296,8 +296,8 @@ parts:
 
   kafka:
     plugin: nil
-    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1-20250605135441.tgz
-    source-checksum: sha512/5b56b9f715caecadd43e34a76eb83e63e1fc185911ba485dc12a30f925d6427c40a42fc8dd94712ed3f5f30211d9c54869df6be74f4078033f3934471d5f6e32
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu0-20251118143652.tgz 
+    source-checksum: sha512/9b95e41ef8426fded4bca4a76d85dbb970627f5b84148e49f208727b5fd5f16cd77bd4269cc07113d5418f2d2a45a8afb7817d02946830d09c055251b548febb
     after: [cruise-control]
     build-packages:
     - ca-certificates-java
