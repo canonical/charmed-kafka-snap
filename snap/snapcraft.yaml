@@ -302,7 +302,7 @@ parts:
     plugin: nil
     source: https://github.com/linkedin/cruise-control.git
     build-packages:
-    - openjdk-11-jdk
+    - openjdk-21-jdk
     override-build: |
       ./gradlew jar && ./gradlew copyDependantLibs && cp -r ./* $CRAFT_PART_INSTALL
     stage:
