@@ -6,6 +6,9 @@ description: |
   This is a snap that bundles Apache Kafka together with other tools of its ecosystem in order to be used in Charmed Operators, providing automated operations management from day 0 to day 2 on the Apache Kafka real-time stream processing, on top of a Virtual Machine cluster and K8s cluster. It is an open source, end-to-end, production ready data platform on top of cloud native technologies.
 grade: stable
 confinement: strict
+architectures:
+  - build-on: [amd64]
+    build-for: [amd64]
 
 system-usernames:
   snap_daemon: shared
