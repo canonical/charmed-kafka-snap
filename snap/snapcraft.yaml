@@ -322,7 +322,7 @@ parts:
   kafka:
     plugin: nil
     source: https://github.com/canonical/central-uploader/releases/download/kafka-3-latest/kafka_2.13-3.9.1-ubuntu2-20260126143756.tgz
-    source-checksum: dc292be9b5f8222d32770019b4910656498b913fdfb0b21d3bee355dbc6df492d5cc0654cb11af35b6d014f029ba8bdc29bdb6c69829277bc0198ba97bc4b438
+    source-checksum: sha512/dc292be9b5f8222d32770019b4910656498b913fdfb0b21d3bee355dbc6df492d5cc0654cb11af35b6d014f029ba8bdc29bdb6c69829277bc0198ba97bc4b438
     after: [cruise-control]
     build-packages:
     - ca-certificates-java
