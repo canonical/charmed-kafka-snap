@@ -6,40 +6,8 @@ on:
 
 jobs:
   build:
-    name: Build Snap
-    runs-on: ubuntu-latest
-    steps:
-      - id: checkout
-        name: Checkout repository
-        uses: actions/checkout@v4
-
-      - id: dependencies 
-        name: Upgrade linux deps
-        run: |
-          sudo apt update
-          # https://askubuntu.com/questions/1276111/error-upgrading-grub-efi-amd64-signed-special-device-old-ssd-does-not-exist
-          sudo apt-mark hold grub-efi-amd64-signed grub-efi-amd64-bin
-          sudo DEBIAN_FRONTEND=noninteractive apt upgrade --yes
-
-      - id: get-version
-        name: Retrieve workload version
-        run: |
-          VERSION=$(yq '(.version|split("-"))[0]' snap/snapcraft.yaml)
-          echo "version=${VERSION}" >> $GITHUB_OUTPUT
-
-      - id: snapcraft
-        name: Build snap
-        uses: snapcore/action-build@v1
-
-      - id: upload
-        name: Upload built snap job artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: charmed-kafka_snap_amd64
-          path: charmed-kafka_${{ steps.get-version.outputs.version }}_amd64.snap
-    outputs:
-      snap-file: ${{ steps.snapcraft.outputs.snap }}
-      version: ${{ steps.get-version.outputs.version }}
+    name: Build snap
+    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v41.1.0
 
   test-with-zk:
     name: Test Snap with ZooKeeper
@@ -48,16 +16,17 @@ jobs:
       - build
     steps:
       - name: Download snap file
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
-          name: charmed-kafka_snap_amd64
-          path: .
+          pattern: ${{ needs.build.outputs.artifact-prefix }}-*
+          merge-multiple: true
 
       - name: Install snap file
         run: |
-          sudo snap install charmed-kafka_${{ needs.build.outputs.version }}_amd64.snap --dangerous
+          FILE=$(ls -1 *${{ matrix.system.arch }}.snap | tail -n1)
+          sudo snap install $FILE --dangerous
           sudo snap install charmed-zookeeper --channel=3/edge
-
+         
       - name: Set default config
         run: |
           sudo cp /snap/charmed-kafka/current/opt/kafka/config/server.properties /var/snap/charmed-kafka/current/etc/kafka
@@ -109,14 +78,16 @@ jobs:
       - build
     steps:
       - name: Download snap file
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v6
         with:
-          name: charmed-kafka_snap_amd64
-          path: .
+          pattern: ${{ needs.build.outputs.artifact-prefix }}-*
+          merge-multiple: true
 
       - name: Install snap file
         run: |
-          sudo snap install charmed-kafka_${{ needs.build.outputs.version }}_amd64.snap --dangerous
+          FILE=$(ls -1 *${{ matrix.system.arch }}.snap | tail -n1)
+          sudo snap install $FILE --dangerous
+          sudo snap install charmed-zookeeper --channel=3/edge
 
       - name: Set default kraft config
         run: |
