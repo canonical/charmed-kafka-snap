@@ -323,8 +323,8 @@ parts:
     plugin: nil
     source: 
       "https://github.com/canonical/central-uploader/releases/download\
-      /kafka_2.13-${CRAFT_PROJECT_VERSION}-ubuntu4\
-      /kafka_2.13-${CRAFT_PROJECT_VERSION}-ubuntu4-20260303081703.tgz"
+      /kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu4\
+      /kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu4-20260303081703.tgz"
     source-checksum: sha512/afe19a95ceed699e82c10381107a70497b07735f6124ebad0a0ca03271f53932afda0a02d7867042c450ae4840a09931f1256c878782db322c470634ea7cf8f8
     after: [cruise-control]
     build-packages:
