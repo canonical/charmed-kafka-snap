@@ -296,7 +296,7 @@ parts:
 
   kafka:
     plugin: nil
-    source: https://github.com/canonical/central-uploader/releases/download/kafka-4-4-latest/kafka_2.13-4.2.0-ubuntu2-20260423135317.tgz
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2-20260423135317.tgz
     source-checksum: sha512/15407092a82c23695bea5f744051e0c61cad46a8b31791815c51e564dcac08fde6b665094c4bb2806d97a1306127d4bba5954a780e395dd5363bc3e27adf7e2d
     after: [cruise-control]
     build-packages:
