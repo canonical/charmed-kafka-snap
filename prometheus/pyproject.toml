@@ -1,0 +1,51 @@
+[project]
+name = "charmed-kafka-prometheus"
+version = "0.1.0"
+description = "Custom Prometheus Exporter for Charmed Apache Kafka"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "charmlibs-snap>=1.0.1",
+    "prometheus-client>=0.25.0",
+    "pydantic-settings>=2.14.0",
+    "pyright>=1.1.408",
+]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+exclude = [".git", "__pycache__", ".tox", "build", "dist", "*.egg_info", "venv"]
+
+[tool.ruff.lint]
+select = ["F", "E", "W", "C", "N", "R", "D", "I001", "UP"]
+# Ignore W503, E501 because using black creates errors with this
+# Ignore D107 Missing docstring in __init__
+ignore = ["E501", "D107", "D417"]
+fixable = ["ALL"]
+
+[tool.ruff.lint.pycodestyle]
+max-doc-length = 99
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 10
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.codespell]
+ignore-words=".codespellignore"
+
+[tool.pyright]
+include = ["main.py", "src"]
+pythonVersion = "3.12"
+pythonPlatform = "All"
+typeCheckingMode = "basic"
+reportIncompatibleMethodOverride = false
+reportMissingModuleSource = true
+stubPath = ""

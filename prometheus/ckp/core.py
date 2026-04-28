@@ -1,0 +1,62 @@
+"""Core models and data classes."""
+
+from dataclasses import dataclass
+
+from prometheus_client import Gauge
+from pydantic import Field
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Constants:
+    """Constants definition."""
+
+    SNAP = "charmed-kafka"
+    CONF_DIR = "/var/snap/charmed-kafka/current/etc/kafka"
+
+
+class Metrics:
+    """Prometheus metrics definition."""
+
+    CONSUMER_LAG = Gauge(
+        "kafka_consumer_lags",
+        "Apache Kafka consumer lags",
+        labelnames=["group", "topic", "partition"],
+    )
+
+
+@dataclass
+class ConsumerGroupState:
+    """Data model for consumer group state."""
+
+    group: str
+    topic: str
+    partition: int
+    lag: int
+
+    @classmethod
+    def from_dict(cls, dict_: dict):
+        """Factory method from a given dict."""
+        return cls(
+            group=dict_["GROUP"],
+            topic=dict_["TOPIC"],
+            partition=int(dict_["PARTITION"]),
+            lag=int(dict_["LAG"]),
+        )
+
+
+class Config(BaseSettings):
+    """Application config model."""
+
+    PORT: int = Field(description="Prometheus exporter port", default=9110)
+    CONFIG_FILE: str = Field(
+        description="The client configuration file to use for Kafka bin commands",
+        default="/var/snap/charmed-kafka/current/etc/kafka/client.properties",
+    )
+    BOOTSTRAP_SERVER: str = Field(description="Comma-separated Kafka bootstrap servers list")
+    CYCLE: float = Field(description="Metric extraction cycle in seconds", default=15.0)
+
+    model_config = SettingsConfigDict(
+        cli_parse_args=True,
+        cli_kebab_case=True,
+        env_file=".env",
+    )
