@@ -1,15 +1,20 @@
 [project]
-name = "charmed-kafka-prometheus"
+name = "ckp"
 version = "0.1.0"
 description = "Custom Prometheus Exporter for Charmed Apache Kafka"
 readme = "README.md"
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 dependencies = [
-    "charmlibs-snap>=1.0.1",
     "prometheus-client>=0.25.0",
     "pydantic-settings>=2.14.0",
-    "pyright>=1.1.408",
 ]
+
+[project.scripts]
+python-exporter = "ckp:main"
+
+[build-system]
+requires = ["uv_build>=0.11.1,<0.12.0"]
+build-backend = "uv_build"
 
 [tool.ruff]
 target-version = "py312"
@@ -49,3 +54,8 @@ typeCheckingMode = "basic"
 reportIncompatibleMethodOverride = false
 reportMissingModuleSource = true
 stubPath = ""
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.409",
+]

@@ -58,5 +58,6 @@ class Config(BaseSettings):
     model_config = SettingsConfigDict(
         cli_parse_args=True,
         cli_kebab_case=True,
-        env_file=".env",
+        env_file="/etc/environment",
+        extra="ignore",
     )

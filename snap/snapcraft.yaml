@@ -21,7 +21,7 @@ hooks:
       - mount-observe
 
 environment:
-  JAVA_HOME: $SNAP/usr/lib/jvm/java-18-openjdk-amd64
+  JAVA_HOME: $SNAP/usr/lib/jvm/java-21-openjdk-amd64
 
 slots:
   kafka-logs:
@@ -293,9 +293,17 @@ apps:
     environment:
       bin_script: connect-plugin-path.sh
   keytool:
-    command: usr/lib/jvm/java-18-openjdk-amd64/bin/keytool
+    command: usr/lib/jvm/java-21-openjdk-amd64/bin/keytool
     plugs:
       - mount-observe
+  python-exporter:
+    plugs:
+      - network
+      - network-bind
+      - mount-observe
+    daemon: simple
+    install-mode: disable
+    command: bin/python-exporter
 
 parts:
   cruise-control:
@@ -327,7 +335,7 @@ parts:
     build-packages:
     - ca-certificates-java
     stage-packages:
-    - openjdk-18-jre-headless
+    - openjdk-21-jre-headless
     - util-linux
     - libpsl5
     - curl
@@ -378,6 +386,13 @@ parts:
       done
       DEST=$SNAPCRAFT_PRIME/opt/kafka/libs
       mkdir -p $DEST && cp *.jar $DEST
+  
+  py-prometheus:
+    build-snaps:
+      - astral-uv
+    plugin: uv
+    source: ./prometheus
+
   wrapper:
     plugin: dump
     source: snap/local
