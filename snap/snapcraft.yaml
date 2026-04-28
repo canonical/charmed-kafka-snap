@@ -321,7 +321,7 @@ parts:
 
   kafka:
     plugin: nil
-    source: https://github.com/canonical/central-uploader/releases/download/kafka-3-latest/kafka_2.13-3.9.1-ubuntu3-20260128150448.tgz
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu3/kafka_2.13-${SNAPCRAFT_PROJECT_VERSION}-ubuntu3-20260128150448.tgz
     source-checksum: sha512/baa774b740f9c5978b30e356530d38ba59f12ec52ee413a7374d0b7b1ccdee4a9e58ae0f7fffe044d15e9410a4b2727e6e0235bdb843aebd0365c05f56116fd9
     after: [cruise-control]
     build-packages:
