@@ -28,15 +28,15 @@ def loop(config: Config):
         ],
     )
     parsed = parse_consumer_groups_output(raw)
-    logger.info(parsed)
+    logger.debug(parsed)
     for item in parsed:
         Metrics.CONSUMER_LAG.labels(item.group, item.topic, item.partition).set(item.lag)
 
 
 if __name__ == "__main__":
-    # if not snap.ensure(SNAP, snap.SnapState.Present.value):
+    # if not snap.ensure(Constants.SNAP, snap.SnapState.Present.value):
     #     print(f"{SNAP} should be present.")
-    #     sys.exit(1)
+    #     sys.exit(8)
 
     config = validate_config()
     start_http_server(config.PORT)

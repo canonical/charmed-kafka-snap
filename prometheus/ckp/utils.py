@@ -16,11 +16,11 @@ def parse_consumer_groups_output(raw: str) -> list[ConsumerGroupState]:
     for line in lines:
         if not line.strip():
             continue
-        # ...
+
         if line.lstrip().startswith("GROUP"):
             headers = line.split()
             continue
-        # ...
+
         parts = line.lstrip().split()
         if headers and len(parts) == len(headers):
             parsed.append(ConsumerGroupState.from_dict(dict(zip(headers, parts))))
