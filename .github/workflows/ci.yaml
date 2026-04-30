@@ -86,6 +86,13 @@ jobs:
           fi
           exit 1
 
+      - name: Test python exporter
+        run: |
+          echo "BOOTSTRAP_SERVER=localhost:9092" | sudo tee -a /etc/environment
+          sudo snap start charmed-kafka.python-exporter
+          sleep 10
+          curl -s http://localhost:9110
+
   test-with-kraft:
     name: Test Snap in Kraft mode
     runs-on: ubuntu-latest
@@ -143,3 +150,10 @@ jobs:
               exit 0
           fi
           exit 1
+
+      - name: Test python exporter
+        run: |
+          echo "BOOTSTRAP_SERVER=localhost:9092" | sudo tee -a /etc/environment
+          sudo snap start charmed-kafka.python-exporter
+          sleep 10
+          curl -s http://localhost:9110
