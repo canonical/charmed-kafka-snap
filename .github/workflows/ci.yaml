@@ -86,18 +86,9 @@ jobs:
           fi
           exit 1
 
+      - uses: actions/checkout@v6
       - name: Test python exporter
-        run: |
-          # Create dummy client config
-          cat > client.properties <<EOF
-          bootstrap.servers=localhost:9092
-          EOF
-          sudo cp client.properties /var/snap/charmed-kafka/current/etc/kafka/client.properties
-          # Set bootstrap servers env var
-          echo "BOOTSTRAP_SERVER=localhost:9092" | sudo tee -a /etc/environment
-          sudo snap start charmed-kafka.python-exporter
-          sleep 10
-          curl -s http://localhost:9110
+        uses: ./.github/actions/test_python_exporter
 
   test-with-kraft:
     name: Test Snap in Kraft mode
@@ -157,52 +148,6 @@ jobs:
           fi
           exit 1
 
-      - name: Generate sample data
-        shell: python
-        run: |
-          import secrets
-          N = 1000
-
-          with open("rawdata", "w") as f:
-            for i in range(N):
-              _ = f.write(f"{i}:{secrets.token_hex(12)}\n")
-
-      - name: Run producer
-        run: |
-          cat rawdata | \
-            sudo charmed-kafka.console-producer \
-              --bootstrap-server localhost:9092 \
-              --property parse.key=true \
-              --property key.separator=":" \
-              --topic test
-
-      - name: Run consumer without lag
-        run: |
-          sudo charmed-kafka.console-consumer \
-            --bootstrap-server localhost:9092 \
-            --topic test \
-            --from-beginning \
-            --max-messages 1000 \
-            --group speedy
-
-      - name: Run consumer with lag
-        run: |
-          sudo charmed-kafka.console-consumer \
-            --bootstrap-server localhost:9092 \
-            --topic test \
-            --from-beginning \
-            --max-messages 456 \
-            --group laggy
-
+      - uses: actions/checkout@v6
       - name: Test python exporter
-        run: |
-          # Create dummy client config
-          cat > client.properties <<EOF
-          bootstrap.servers=localhost:9092
-          EOF
-          sudo cp client.properties /var/snap/charmed-kafka/current/etc/kafka/client.properties
-          # Set bootstrap servers env var
-          echo "BOOTSTRAP_SERVER=localhost:9092" | sudo tee -a /etc/environment
-          sudo snap start charmed-kafka.python-exporter
-          sleep 20
-          curl -s http://localhost:9110
+        uses: ./.github/actions/test_python_exporter
