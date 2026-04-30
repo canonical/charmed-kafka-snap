@@ -88,6 +88,12 @@ jobs:
 
       - name: Test python exporter
         run: |
+          # Create dummy client config
+          cat > client.properties <<EOF
+          bootstrap.servers=localhost:9092
+          EOF
+          sudo cp client.properties /var/snap/charmed-kafka/current/etc/kafka/client.properties
+          # Set bootstrap servers env var
           echo "BOOTSTRAP_SERVER=localhost:9092" | sudo tee -a /etc/environment
           sudo snap start charmed-kafka.python-exporter
           sleep 10
@@ -153,6 +159,12 @@ jobs:
 
       - name: Test python exporter
         run: |
+          # Create dummy client config
+          cat > client.properties <<EOF
+          bootstrap.servers=localhost:9092
+          EOF
+          sudo cp client.properties /var/snap/charmed-kafka/current/etc/kafka/client.properties
+          # Set bootstrap servers env var
           echo "BOOTSTRAP_SERVER=localhost:9092" | sudo tee -a /etc/environment
           sudo snap start charmed-kafka.python-exporter
           sleep 10
