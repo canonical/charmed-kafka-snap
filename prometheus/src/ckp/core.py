@@ -18,7 +18,7 @@ class Metrics:
     """Prometheus metrics definition."""
 
     CONSUMER_LAG = Gauge(
-        "kafka_consumer_lags",
+        "kafka_consumer_offset_lag_total",
         "Apache Kafka consumer lags",
         labelnames=["group", "topic", "partition"],
     )
@@ -53,7 +53,7 @@ class Config(BaseSettings):
         default="/var/snap/charmed-kafka/current/etc/kafka/client.properties",
     )
     BOOTSTRAP_SERVER: str = Field(description="Comma-separated Kafka bootstrap servers list")
-    CYCLE: float = Field(description="Metric extraction cycle in seconds", default=15.0)
+    CYCLE: float = Field(description="Metric extraction cycle in seconds", default=60.0)
 
     model_config = SettingsConfigDict(
         cli_parse_args=True,
