@@ -1,0 +1,25 @@
+summary: Basic setup tests
+
+execute: |
+  # Copy config files
+  sudo cp /snap/kafka/current/opt/kafka/config/server.properties \
+    /var/snap/kafka/current/etc/kafka/server.properties
+  sudo cp /snap/kafka/current/opt/kafka/config/connect-distributed.properties \
+    /var/snap/kafka/current/etc/connect
+
+  # Configure log.dirs
+  sudo sed -i '/log.dirs=/c\log.dirs=/var/snap/kafka/common/var/log/kafka' \
+    /var/snap/kafka/current/etc/kafka/server.properties
+
+  # Format storage
+  uuid=$(sudo kafka.storage random-uuid)
+  sudo kafka.storage format --standalone --cluster-id $uuid \
+    -c /var/snap/kafka/current/etc/kafka/server.properties
+
+  sudo chown -R _daemon_:_daemon_ /var/snap/kafka/common/var/log/kafka
+
+  #sudo snap start kafka
+
+  #sleep 15
+
+  kafka.topics --create --topic test --bootstrap-server localhost:9092
