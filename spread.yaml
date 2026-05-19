@@ -1,0 +1,23 @@
+project: kafka-snap
+
+backends:
+  craft:
+    type: lxd
+    systems:
+      - ubuntu-24.04
+
+suites:
+  tests/spread/:
+    summary: Integration Tests
+    prepare: |
+      snap install snapd
+      snap refresh snapd
+    prepare-each: |
+      snap install "$CRAFT_ARTIFACT" --dangerous --jailmode
+    restore-each: |
+      snap remove kafka --purge --terminate
+
+exclude:
+  - .git
+
+kill-timeout: 1h
