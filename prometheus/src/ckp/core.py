@@ -19,7 +19,17 @@ class Metrics:
 
     CONSUMER_LAG = Gauge(
         "kafka_consumer_offset_lag_total",
-        "Apache Kafka consumer lags",
+        "Apache Kafka consumer lag",
+        labelnames=["group", "topic", "partition"],
+    )
+    CONSUMER_CURRENT_OFFSET = Gauge(
+        "kafka_consumer_offset_current",
+        "Apache Kafka consumer current offset",
+        labelnames=["group", "topic", "partition"],
+    )
+    CONSUMER_LOG_END_OFFSET = Gauge(
+        "kafka_consumer_offset_log_end",
+        "Apache Kafka consumer log end offset",
         labelnames=["group", "topic", "partition"],
     )
 
@@ -31,6 +41,8 @@ class ConsumerGroupState:
     group: str
     topic: str
     partition: int
+    current_offset: int
+    log_end_offset: int
     lag: int
 
     @classmethod
@@ -40,6 +52,8 @@ class ConsumerGroupState:
             group=dict_["GROUP"],
             topic=dict_["TOPIC"],
             partition=int(dict_["PARTITION"]),
+            current_offset=int(dict_["CURRENT-OFFSET"]),
+            log_end_offset=int(dict_["LOG-END-OFFSET"]),
             lag=int(dict_["LAG"]),
         )
 

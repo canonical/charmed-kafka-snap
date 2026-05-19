@@ -31,6 +31,12 @@ def iterate(config: Config):
     logger.debug(parsed)
     for item in parsed:
         Metrics.CONSUMER_LAG.labels(item.group, item.topic, item.partition).set(item.lag)
+        Metrics.CONSUMER_CURRENT_OFFSET.labels(item.group, item.topic, item.partition).set(
+            item.current_offset
+        )
+        Metrics.CONSUMER_LOG_END_OFFSET.labels(item.group, item.topic, item.partition).set(
+            item.log_end_offset
+        )
 
 
 def main():
