@@ -116,7 +116,7 @@ jobs:
           sudo charmed-kafka.topics \
             --bootstrap-server localhost:9092 \
             --command-config /var/snap/charmed-kafka/current/etc/kafka/admin-client.properties \
-            --create --topic test
+            --create --topic logtest
 
           i=1
           while [ $i -le 5 ]
@@ -125,7 +125,7 @@ jobs:
               sudo charmed-kafka.console-producer \
               --bootstrap-server localhost:9092 \
               --producer.config /var/snap/charmed-kafka/current/etc/kafka/admin-client.properties \
-              --topic test
+              --topic logtest
             i=$((i+1))
           done
 
@@ -133,7 +133,7 @@ jobs:
           sudo charmed-kafka.console-consumer \
             --bootstrap-server localhost:9092 \
             --consumer.config /var/snap/charmed-kafka/current/etc/kafka/client.properties \
-            --topic test \
+            --topic logtest \
             --from-beginning \
             --max-messages 3
 
