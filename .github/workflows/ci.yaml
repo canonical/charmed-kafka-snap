@@ -5,6 +5,21 @@ on:
   pull_request:
 
 jobs:
+  lint:
+    name: Lint Prometheus Exporter
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Install tox & uv
+        run: |
+          sudo snap install --classic astral-uv
+          pipx install tox
+      - name: Run linters
+        working-directory: ./prometheus
+        run: tox run -e lint
+
   build:
     name: Build snap
     uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v41.1.0
@@ -71,6 +86,10 @@ jobs:
           fi
           exit 1
 
+      - uses: actions/checkout@v6
+      - name: Test python exporter
+        uses: ./.github/actions/test_python_exporter
+
   test-with-kraft:
     name: Test Snap in Kraft mode
     runs-on: ubuntu-latest
@@ -128,3 +147,7 @@ jobs:
               exit 0
           fi
           exit 1
+
+      - uses: actions/checkout@v6
+      - name: Test python exporter
+        uses: ./.github/actions/test_python_exporter
