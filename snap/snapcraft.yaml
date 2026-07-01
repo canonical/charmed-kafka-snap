@@ -271,6 +271,14 @@ apps:
     command: usr/lib/jvm/java-21-openjdk-amd64/bin/keytool
     plugs:
       - mount-observe
+  python-exporter:
+    plugs:
+      - network
+      - network-bind
+      - mount-observe
+    daemon: simple
+    install-mode: disable
+    command: bin/python-exporter
 
 parts:
   cruise-control:
@@ -353,6 +361,13 @@ parts:
       done
       DEST=$SNAPCRAFT_PRIME/opt/kafka/libs
       mkdir -p $DEST && cp *.jar $DEST
+
+  py-prometheus:
+    build-snaps:
+      - astral-uv
+    plugin: uv
+    source: ./prometheus
+
   wrapper:
     plugin: dump
     source: snap/local

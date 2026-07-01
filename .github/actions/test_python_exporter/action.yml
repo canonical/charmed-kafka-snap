@@ -1,0 +1,63 @@
+name: 'Test Python Exporter'
+description: "Runs integration tests for the python exporter snap daemon."
+
+runs:
+  using: "composite"
+  steps:
+    - name: Ensure charmed-kafka is present
+      shell: bash
+      run: sudo charmed-kafka.topics --version
+
+    - name: Generate sample data
+      shell: python
+      run: |
+        import secrets
+        N = 1000
+
+        with open("rawdata", "w") as f:
+          for i in range(N):
+            _ = f.write(f"{i}:{secrets.token_hex(12)}\n")
+
+    - name: Run producer
+      shell: bash
+      run: |
+        cat rawdata | \
+          sudo charmed-kafka.console-producer \
+            --bootstrap-server localhost:9092 \
+            --property parse.key=true \
+            --property key.separator=":" \
+            --topic test
+
+    - name: Run consumer without lag
+      shell: bash
+      run: |
+        sudo charmed-kafka.console-consumer \
+          --bootstrap-server localhost:9092 \
+          --topic test \
+          --from-beginning \
+          --max-messages 1000 \
+          --group speedy
+
+    - name: Run consumer with lag
+      shell: bash
+      run: |
+        sudo charmed-kafka.console-consumer \
+          --bootstrap-server localhost:9092 \
+          --topic test \
+          --from-beginning \
+          --max-messages 456 \
+          --group laggy
+
+    - name: Test python exporter
+      shell: bash
+      run: |
+        # Create dummy client config
+        cat > client.properties <<EOF
+        bootstrap.servers=localhost:9092
+        EOF
+        sudo cp client.properties /var/snap/charmed-kafka/current/etc/kafka/client.properties
+        # Set bootstrap servers env var
+        echo "BOOTSTRAP_SERVER=localhost:9092" | sudo tee -a /etc/environment
+        sudo snap start charmed-kafka.python-exporter
+        sleep 20
+        curl -s http://localhost:9110
