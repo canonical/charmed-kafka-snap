@@ -4,6 +4,10 @@ description: "Runs integration tests for the python exporter snap daemon."
 runs:
   using: "composite"
   steps:
+    - name: Ensure charmed-kafka is present
+      shell: bash
+      run: sudo charmed-kafka.topics --version
+
     - name: Generate sample data
       shell: python
       run: |
