@@ -100,6 +100,43 @@ jobs:
       - name: Test python exporter
         uses: ./.github/actions/test_python_exporter
 
+      - name: Test KIP reporter
+        run: |
+          # Install & configure OTelCol snap
+          sudo snap install opentelemetry-collector
+          sudo mkdir -p /etc/otelcol/config.d
+          sudo cp ./tests/config/otelcol.yaml /etc/otelcol/config.d/otelcol-100.yaml
+          sudo snap start opentelemetry-collector
+
+          # Configure metrics reporter
+          echo "metric.reporters=com.canonical.kafka.CustomMetricsReporter" | sudo tee -a \
+            /var/snap/charmed-kafka/current/etc/kafka/server.properties
+          sudo snap restart charmed-kafka.daemon
+          sleep 20
+
+          sudo charmed-kafka.configs \
+            --bootstrap-server localhost:9092 \
+            --alter \
+            --entity-type client-metrics \
+            --entity-name producer-metrics \
+            --add-config "metrics=org.apache.kafka.producer.,interval.ms=1000"
+
+          # Create topic
+          sudo charmed-kafka.topics \
+            --bootstrap-server localhost:9092 \
+            --create --topic testClientMetrics
+
+          # Run a producer performance test
+          sudo charmed-kafka.producer-perf-test \
+            --producer-props bootstrap.servers=localhost:9092 \
+            --throughput 1000 \
+            --num-records 5000 \
+            --record-size 1024 \
+            --topic testClientMetrics \
+            --print-metrics
+
+          curl -s http://localhost:9990/metrics
+
       - name: Check logging
         run: |
           sudo cp ./tests/config/server.properties /var/snap/charmed-kafka/current/etc/kafka/server.properties
