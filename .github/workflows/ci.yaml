@@ -100,7 +100,7 @@ jobs:
       - name: Test python exporter
         uses: ./.github/actions/test_python_exporter
 
-      - name: Test KIP reporter
+      - name: Test client metrics reporter
         run: |
           # Install & configure OTelCol snap
           sudo snap install opentelemetry-collector
