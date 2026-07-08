@@ -1,6 +1,6 @@
 name: charmed-kafka
 base: core24
-version: '4.2.0'
+version: '4.3.0'
 summary: Apache Kafka in a snap.
 description: |
   This is a snap that bundles Apache Kafka together with other tools of its ecosystem in order to be used in Charmed Operators, providing automated operations management from day 0 to day 2 on the Apache Kafka real-time stream processing, on top of a Virtual Machine cluster and K8s cluster. It is an open source, end-to-end, production ready data platform on top of cloud native technologies.
@@ -304,8 +304,8 @@ parts:
 
   kafka:
     plugin: nil
-    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2-20260423135317.tgz
-    source-checksum: sha512/15407092a82c23695bea5f744051e0c61cad46a8b31791815c51e564dcac08fde6b665094c4bb2806d97a1306127d4bba5954a780e395dd5363bc3e27adf7e2d
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1-20260618141822.tgz
+    source-checksum: sha512/d0d1120d1928ebed6afaa8080a70b1ed10110bb53e088c30d02f36ad546ceb04a982b4e9600d91b3620412ae5b06542d01b52734430c6eca949d897e0a547d23
     after: [cruise-control]
     build-packages:
     - ca-certificates-java
@@ -318,6 +318,7 @@ parts:
       craftctl default
       mkdir -p $CRAFT_PART_INSTALL/opt/kafka
       cp -r ./* $CRAFT_PART_INSTALL/opt/kafka
+      find $CRAFT_PART_INSTALL/opt/kafka/bin/ -name *.sh -exec chmod a+x {} +
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/opt/kafka/libs
