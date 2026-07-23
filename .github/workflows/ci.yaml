@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install tox & uv
         run: |
           sudo snap install --classic astral-uv
@@ -22,7 +22,7 @@ jobs:
 
   build:
     name: Build snap
-    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v32.0.0
+    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v50.2.0
 
   test:
     name: Test Snap (${{ matrix.system.arch }})
@@ -39,7 +39,7 @@ jobs:
             arch: arm64
     steps:
       - name: Download snap package
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: ${{ needs.build.outputs.artifact-prefix }}-*
           merge-multiple: true
@@ -105,7 +105,7 @@ jobs:
           sleep 20
           curl -s http://localhost:9090/kafkacruisecontrol/state | grep "state: RUNNING"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Test python exporter
         uses: ./.github/actions/test_python_exporter
 
