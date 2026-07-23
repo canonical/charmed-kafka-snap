@@ -9,6 +9,7 @@ confinement: strict
 
 platforms:
   amd64:
+  arm64:
 
 system-usernames:
   _daemon_: shared
@@ -21,7 +22,7 @@ hooks:
       - mount-observe
 
 environment:
-  JAVA_HOME: $SNAP/usr/lib/jvm/java-21-openjdk-amd64
+  JAVA_HOME: $SNAP/usr/lib/jvm/java-21-openjdk-$CRAFT_ARCH_BUILD_FOR
 
 slots:
   kafka-logs:
@@ -268,7 +269,7 @@ apps:
     environment:
       bin_script: connect-plugin-path.sh
   keytool:
-    command: usr/lib/jvm/java-21-openjdk-amd64/bin/keytool
+    command: usr/lib/jvm/java-21-openjdk-$CRAFT_ARCH_BUILD_FOR/bin/keytool
     plugs:
       - mount-observe
   python-exporter:

@@ -7,7 +7,7 @@ on:
 jobs:
   lint:
     name: Lint Prometheus Exporter
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout
@@ -25,10 +25,18 @@ jobs:
     uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v32.0.0
 
   test:
-    name: Test Snap
-    runs-on: ubuntu-latest
+    name: Test Snap (${{ matrix.system.arch }})
+    runs-on: ${{ matrix.system.os }}
     needs:
       - build
+    strategy:
+      fail-fast: false
+      matrix:
+        system:
+          - os: ubuntu-24.04
+            arch: amd64
+          - os: ubuntu-24.04-arm
+            arch: arm64
     steps:
       - name: Download snap package
         uses: actions/download-artifact@v4
@@ -38,7 +46,8 @@ jobs:
 
       - name: Install snap file
         run: |
-          sudo snap install charmed-kafka*.snap --dangerous
+          FILE=$(ls -1 charmed-kafka*${{ matrix.system.arch }}.snap | tail -n1)
+          sudo snap install "$FILE" --dangerous
 
       - name: Set default configs
         run: |
