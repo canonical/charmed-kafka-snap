@@ -7,11 +7,11 @@ on:
 jobs:
   lint:
     name: Lint Prometheus Exporter
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install tox & uv
         run: |
           sudo snap install --classic astral-uv
@@ -22,23 +22,32 @@ jobs:
 
   build:
     name: Build snap
-    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v32.0.0
+    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v50.2.0
 
   test:
-    name: Test Snap
-    runs-on: ubuntu-latest
+    name: Test Snap (${{ matrix.system.arch }})
+    runs-on: ${{ matrix.system.os }}
     needs:
       - build
+    strategy:
+      fail-fast: false
+      matrix:
+        system:
+          - os: ubuntu-24.04
+            arch: amd64
+          - os: ubuntu-24.04-arm
+            arch: arm64
     steps:
       - name: Download snap package
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           pattern: ${{ needs.build.outputs.artifact-prefix }}-*
           merge-multiple: true
 
       - name: Install snap file
         run: |
-          sudo snap install charmed-kafka*.snap --dangerous
+          FILE=$(ls -1 charmed-kafka*${{ matrix.system.arch }}.snap | tail -n1)
+          sudo snap install "$FILE" --dangerous
 
       - name: Set default configs
         run: |
@@ -96,7 +105,7 @@ jobs:
           sleep 20
           curl -s http://localhost:9090/kafkacruisecontrol/state | grep "state: RUNNING"
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Test python exporter
         uses: ./.github/actions/test_python_exporter
 
