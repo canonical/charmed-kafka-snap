@@ -59,7 +59,7 @@ def run_bin_command(
     substrate: Substrates = "vm",
 ) -> str:
     """Execute a Kafka bin command."""
-    if os.environ.get("SNAP") and substrate != "k8s":
+    if os.environ.get("SNAP"):
         return _run_bin_command_in_snap(bin_keyword, bin_args, opts=opts)
 
     return _run_bin_command_on_substrate(bin_keyword, bin_args, opts=opts, substrate=substrate)
