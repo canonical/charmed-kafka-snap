@@ -1,10 +1,13 @@
 """Core models and data classes."""
 
+import typing
 from dataclasses import dataclass
 
 from prometheus_client import Gauge
 from pydantic import Field
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+Substrates = typing.Literal["vm", "k8s"]
 
 
 class Constants:
@@ -68,6 +71,7 @@ class Config(BaseSettings):
     )
     BOOTSTRAP_SERVER: str = Field(description="Comma-separated Kafka bootstrap servers list")
     CYCLE: float = Field(description="Metric extraction cycle in seconds", default=60.0)
+    SUBSTRATE: Substrates = Field(description="Workload substrate", default="vm")
 
     model_config = SettingsConfigDict(
         cli_parse_args=True,

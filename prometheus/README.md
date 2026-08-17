@@ -22,6 +22,7 @@ options:
   --bootstrap-server str
                         Comma-separated Kafka bootstrap servers list (required)
   --cycle float         Metric extraction cycle in seconds (default: 60.0)
+  --substrate {vm,k8s}  Workload substrate (default: vm)
 ```
 
 ## Sample exporter results:
