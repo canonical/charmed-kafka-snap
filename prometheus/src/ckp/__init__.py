@@ -26,6 +26,7 @@ def iterate(config: Config):
             "--all-topics",
             "--describe",
         ],
+        substrate=config.SUBSTRATE,
     )
     parsed = parse_consumer_groups_output(raw)
     logger.debug(parsed)

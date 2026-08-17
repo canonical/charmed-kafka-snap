@@ -3,7 +3,7 @@
 import os
 import subprocess
 
-from .core import Constants
+from .core import Constants, Substrates
 
 
 def execute(cmd, cwd: str | None = None, timeout: float = 10.0, env=None) -> str:
@@ -19,15 +19,23 @@ def execute(cmd, cwd: str | None = None, timeout: float = 10.0, env=None) -> str
     )
 
 
-def _run_bin_command_using_snap_app(
-    bin_keyword: str, bin_args: list[str], opts: list[str] | None = None
+def _run_bin_command_on_substrate(
+    bin_keyword: str,
+    bin_args: list[str],
+    opts: list[str] | None = None,
+    substrate: Substrates = "vm",
 ) -> str:
     """Execute a Kafka bin command using charmed-kafka apps."""
     if opts is None:
         opts = []
     opts_str = " ".join(opts)
     bin_str = " ".join(bin_args)
-    command = f"{opts_str} {Constants.SNAP}.{bin_keyword} {bin_str}"
+    cmd = (
+        f"{Constants.SNAP}.{bin_keyword}"
+        if substrate == "vm"
+        else f"/opt/kafka/bin/kafka-{bin_keyword}.sh"
+    )
+    command = f"{opts_str} {cmd} {bin_str}"
     return execute(command)
 
 
@@ -44,9 +52,14 @@ def _run_bin_command_in_snap(
     return execute(command, env=os.environ | {"bin_script": f"kafka-{bin_keyword}.sh"})
 
 
-def run_bin_command(bin_keyword: str, bin_args: list[str], opts: list[str] | None = None) -> str:
+def run_bin_command(
+    bin_keyword: str,
+    bin_args: list[str],
+    opts: list[str] | None = None,
+    substrate: Substrates = "vm",
+) -> str:
     """Execute a Kafka bin command."""
     if os.environ.get("SNAP"):
         return _run_bin_command_in_snap(bin_keyword, bin_args, opts=opts)
 
-    return _run_bin_command_using_snap_app(bin_keyword, bin_args, opts=opts)
+    return _run_bin_command_on_substrate(bin_keyword, bin_args, opts=opts, substrate=substrate)
