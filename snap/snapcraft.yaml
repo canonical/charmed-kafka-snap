@@ -285,6 +285,7 @@ parts:
   cruise-control:
     plugin: nil
     source: https://github.com/linkedin/cruise-control.git
+    source-tag: "3.1.0"
     build-packages:
     - openjdk-17-jdk
     override-build: |
@@ -323,7 +324,7 @@ parts:
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/opt/kafka/libs
-      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter-* $CRAFT_PRIME/opt/kafka/libs
+      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter* $CRAFT_PRIME/opt/kafka/libs
 
   prometheus-exporter:
     plugin: nil
