@@ -306,8 +306,8 @@ parts:
 
   kafka:
     plugin: nil
-    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1-20261117065801.tgz
-    source-checksum: sha512/d6850c10e6f4f3f3c54f89c0c4dbffb0cdffd57d4803daaf2b5c855cd96e66586e65a84f096ef923adc891ec83d9e5da324ea479cf8e35d3f20b0b4d811af3bf
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2-20261118101323.tgz
+    source-checksum: sha512/0d65b5e29cd5a07a34a8e13de4365bd0d79da4b353531083ab67038679da9648e3d0067c6e509fd219df76fa4567344cfee0d30b6ef459a349a55e9cd75969cc
     after: [cruise-control]
     build-packages:
     - ca-certificates-java
