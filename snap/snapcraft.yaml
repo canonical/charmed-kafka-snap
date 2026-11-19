@@ -1,6 +1,6 @@
 name: charmed-kafka
 base: core24
-version: '4.3.0'
+version: '4.4.0'
 summary: Apache Kafka in a snap.
 description: |
   This is a snap that bundles Apache Kafka together with other tools of its ecosystem in order to be used in Charmed Operators, providing automated operations management from day 0 to day 2 on the Apache Kafka real-time stream processing, on top of a Virtual Machine cluster and K8s cluster. It is an open source, end-to-end, production ready data platform on top of cloud native technologies.
@@ -284,9 +284,10 @@ apps:
 parts:
   cruise-control:
     plugin: nil
-    source: https://github.com/linkedin/cruise-control.git
+    source: https://github.com/cruise-control-for-kafka/cruise-control.git
+    source-tag: "3.1.0"
     build-packages:
-    - openjdk-21-jdk
+    - openjdk-17-jdk
     override-build: |
       ./gradlew jar && ./gradlew copyDependantLibs && cp -r ./* $CRAFT_PART_INSTALL
     stage:
@@ -305,8 +306,8 @@ parts:
 
   kafka:
     plugin: nil
-    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu1-20260618141822.tgz
-    source-checksum: sha512/d0d1120d1928ebed6afaa8080a70b1ed10110bb53e088c30d02f36ad546ceb04a982b4e9600d91b3620412ae5b06542d01b52734430c6eca949d897e0a547d23
+    source: https://github.com/canonical/central-uploader/releases/download/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2/kafka_2.13-$SNAPCRAFT_PROJECT_VERSION-ubuntu2-20261118101323.tgz
+    source-checksum: sha512/0d65b5e29cd5a07a34a8e13de4365bd0d79da4b353531083ab67038679da9648e3d0067c6e509fd219df76fa4567344cfee0d30b6ef459a349a55e9cd75969cc
     after: [cruise-control]
     build-packages:
     - ca-certificates-java
@@ -323,7 +324,7 @@ parts:
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/opt/kafka/libs
-      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter-* $CRAFT_PRIME/opt/kafka/libs
+      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter* $CRAFT_PRIME/opt/kafka/libs
 
   prometheus-exporter:
     plugin: nil
