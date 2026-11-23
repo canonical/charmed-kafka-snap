@@ -309,8 +309,9 @@ parts:
   cruise-control:
     plugin: nil
     source: https://github.com/linkedin/cruise-control.git
+    source-tag: "3.1.0"
     build-packages:
-    - openjdk-21-jdk
+    - openjdk-17-jdk
     override-build: |
       ./gradlew jar && ./gradlew copyDependantLibs && cp -r ./* $CRAFT_PART_INSTALL
     stage:
@@ -346,7 +347,7 @@ parts:
     override-prime: |
       craftctl default
       mkdir -p $CRAFT_PRIME/opt/kafka/libs
-      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter-* $CRAFT_PRIME/opt/kafka/libs
+      cp $CRAFT_STAGE/cruise-control-metrics-reporter/build/libs/cruise-control-metrics-reporter* $CRAFT_PRIME/opt/kafka/libs
 
   prometheus-exporter:
     plugin: nil
@@ -386,7 +387,7 @@ parts:
       done
       DEST=$SNAPCRAFT_PRIME/opt/kafka/libs
       mkdir -p $DEST && cp *.jar $DEST
-  
+
   py-prometheus:
     build-snaps:
       - astral-uv
