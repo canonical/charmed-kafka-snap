@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 5
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
       - name: Install tox & uv
         run: |
           sudo snap install --classic astral-uv
@@ -22,7 +22,7 @@ jobs:
 
   build:
     name: Build snap
-    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v41.1.0
+    uses: canonical/data-platform-workflows/.github/workflows/build_snap.yaml@v56
 
   test-with-zk:
     name: Test Snap with ZooKeeper
@@ -86,7 +86,7 @@ jobs:
           fi
           exit 1
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Test python exporter
         uses: ./.github/actions/test_python_exporter
 
@@ -97,7 +97,7 @@ jobs:
       - build
     steps:
       - name: Download snap file
-        uses: actions/download-artifact@v6
+        uses: actions/download-artifact@v8
         with:
           pattern: ${{ needs.build.outputs.artifact-prefix }}-*
           merge-multiple: true
@@ -148,6 +148,6 @@ jobs:
           fi
           exit 1
 
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@v7
       - name: Test python exporter
         uses: ./.github/actions/test_python_exporter
